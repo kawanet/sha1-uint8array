@@ -27,6 +27,7 @@
   "files": [
     "LICENSE",
     "README.md",
+    "dist/*.js",
     "lib/*.js",
     "types/sha1-uint8array.d.ts"
   ],

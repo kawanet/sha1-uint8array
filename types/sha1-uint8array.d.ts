@@ -1,5 +1,5 @@
 /**
- * sha1-uint8array.d.ts
+ * https://github.com/kawanet/sha1-uint8array
  */
 
 export declare function createHash(algorithm?: string): Hash;

@@ -10,7 +10,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "removeComments": true,
-    "outDir": "./",
+    "outDir": "../build",
     "skipLibCheck": true,
     "strictNullChecks": false,
     "target": "ES5",
