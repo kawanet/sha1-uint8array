@@ -49,7 +49,8 @@ make test-browser
 
 ## BROWSER
 
-- https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js
+- Live Demo https://kawanet.github.io/sha1-uint8array/
+- Minified https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js"></script>
@@ -60,7 +61,7 @@ make test-browser
 </script>
 ```
 
-## MIT License
+## MIT LICENSE
 
 Copyright (c) 2020 Yusuke Kawasaki
 
