@@ -29,7 +29,7 @@ Node.js's native `crypto` module run faster than others on Node.js.
 |module|version|node.js V14|Chrome 87|minified|backend|note|
 |---|---|---|---|---|---|---|
 |[crypto](https://nodejs.org/api/crypto.html)|-|97ms|-|-|OpenSSL||
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.1.0|239ms|408ms|3KB|Uint8Array|👍|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.1.0|239ms|408ms|2KB|Uint8Array|👍|
 |[tiny-sha1](https://npmjs.com/package/tiny-sha1)|0.2.1|213ms|570ms|2KB|Uint8Array|tiny-sha1/dist/tiny-sha1.js|
 |[jssha](https://npmjs.com/package/jssha)|3.2.0|515ms|627ms|9KB|Uint8Array|jssha/dist/sha1.js|
 |[sha.js](https://npmjs.com/package/sha.js)|2.4.11|335ms|715ms|26KB|Buffer|sha.js/sha1.js|
@@ -40,8 +40,12 @@ Node.js's native `crypto` module run faster than others on Node.js.
 The benchmark source code is included in the git repository.
 
 ```sh
-# run benchmark on Node.js
+# run the benchmark on Node.js
 REPEAT=100 mocha test/99.benchmark.js
+
+# run tests and the benchmark on browser
+npm build
+open browser/test.html
 ```
 
 ## MIT License
