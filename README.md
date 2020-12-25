@@ -44,16 +44,15 @@ The benchmark source code is included in the git repository.
 REPEAT=100 mocha test/99.benchmark.js
 
 # run tests and the benchmark on browser
-npm build
-open browser/test.html
+make test-browser
 ```
 
 ## BROWSER
 
-- https://raw.githubusercontent.com/kawanet/sha1-uint8array/main/dist/sha1-uint8array.min.js
+- https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js
 
 ```html
-<script src="sha1-uint8array.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js"></script>
 <script>
     const text = "";
     const hash1 = createHash("sha1").update(text).digest("hex");
