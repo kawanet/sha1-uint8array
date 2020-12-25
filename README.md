@@ -48,6 +48,19 @@ npm build
 open browser/test.html
 ```
 
+## BROWSER
+
+- https://raw.githubusercontent.com/kawanet/sha1-uint8array/main/dist/sha1-uint8array.min.js
+
+```html
+<script src="sha1-uint8array.min.js"></script>
+<script>
+    const text = "";
+    const hash1 = createHash("sha1").update(text).digest("hex");
+    // => "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+</script>
+```
+
 ## MIT License
 
 Copyright (c) 2020 Yusuke Kawasaki
