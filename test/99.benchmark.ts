@@ -2,6 +2,7 @@
 
 import {strict as assert} from "assert";
 import {
+    CreateHash,
     CryptoAdapter,
     CryptoJsAdapter,
     JsHashesAdapter,
@@ -15,8 +16,9 @@ import {MAKURANOSOSHI} from "./utils/sample-text";
 
 const TESTNAME = __filename.replace(/^.*\//, "");
 
-const REPEAT = process.env.REPEAT || 10;
-const TEST_LESS = process.env.TEST_LESS || false;
+const isBrowser = ("undefined" !== typeof window);
+
+const REPEAT = process.env.REPEAT || (isBrowser ? 100 : 100);
 
 describe(TESTNAME, () => {
     const expects = {} as { [length: string]: string };
@@ -30,13 +32,15 @@ describe(TESTNAME, () => {
         }
     });
 
-    if (!TEST_LESS) runTests("crypto", new CryptoAdapter());
+    runTests("crypto", new CryptoAdapter());
 
-    if (!TEST_LESS) runTests("crypto-js", new CryptoJsAdapter());
+    runTests("crypto-js", new CryptoJsAdapter());
 
-    if (!TEST_LESS) runTests("jssha", new JsSHAAdapter());
+    runTests("create-hash/browser", new CreateHash());
 
-    if (!TEST_LESS) runTests("jshashes", new JsHashesAdapter());
+    runTests("jssha", new JsSHAAdapter());
+
+    runTests("jshashes", new JsHashesAdapter());
 
     runTests("sha.js", new ShaJSAdapter());
 

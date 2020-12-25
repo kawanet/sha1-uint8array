@@ -2,6 +2,7 @@
 
 import {strict as assert} from "assert";
 import {
+    CreateHash,
     CryptoAdapter,
     CryptoJsAdapter,
     JsHashesAdapter,
@@ -18,6 +19,8 @@ describe(TESTNAME, () => {
     runTests("crypto", new CryptoAdapter());
 
     runTests("crypto-js", new CryptoJsAdapter());
+
+    runTests("create-hash/browser", new CreateHash());
 
     runTests("jssha", new JsSHAAdapter());
 

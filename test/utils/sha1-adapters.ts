@@ -31,6 +31,18 @@ export class CryptoAdapter implements SHA1Adapter {
 }
 
 /**
+ * https://www.npmjs.com/package/create-hash
+ */
+
+export class CreateHash implements SHA1Adapter {
+    private createHash = require("create-hash/browser");
+
+    sha1(str: string): string {
+        return this.createHash("sha1").update(str).digest("hex");
+    }
+}
+
+/**
  * https://www.npmjs.com/package/crypto-js
  */
 
