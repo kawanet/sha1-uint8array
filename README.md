@@ -62,6 +62,11 @@ open ../browser/test.html
 </script>
 ```
 
+## LINKS
+
+- https://github.com/kawanet/sha1-uint8array
+- https://www.npmjs.com/package/sha1-uint8array
+
 ## MIT LICENSE
 
 Copyright (c) 2020 Yusuke Kawasaki
