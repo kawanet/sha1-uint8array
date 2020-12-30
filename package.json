@@ -1,9 +1,8 @@
 {
   "name": "sha1-uint8array",
   "description": "createHash('sha1').update(str).digest('hex')",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Yusuke Kawasaki <u-suke@kawa.net>",
-  "browser": "./dist/sha1-uint8array.min.js",
   "bugs": {
     "url": "https://github.com/kawanet/sha1-uint8array/issues"
   },
@@ -46,7 +45,8 @@
     "url": "git+https://github.com/kawanet/sha1-uint8array.git"
   },
   "scripts": {
-    "build": "make",
+    "build": "./node_modules/.bin/tsc -p .",
+    "build-browser": "make -C browser clean all",
     "fixpack": "fixpack",
     "mocha": "./node_modules/.bin/mocha -R spec test/*.js",
     "test": "npm run mocha"

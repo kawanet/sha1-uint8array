@@ -44,7 +44,8 @@ The benchmark source code is included in the git repository.
 REPEAT=100 mocha test/99.benchmark.js
 
 # run tests and the benchmark on browser
-make test-browser
+make -C browser
+open ../browser/test.html
 ```
 
 ## BROWSER

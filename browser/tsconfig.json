@@ -1,6 +1,7 @@
 {
   "include": [
-    "../lib"
+    "../lib",
+    "../test"
   ],
   "compilerOptions": {
     "module": "commonjs",
@@ -15,6 +16,7 @@
     "strictNullChecks": false,
     "target": "ES5",
     "types": [
+      "mocha",
       "node"
     ]
   }

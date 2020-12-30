@@ -5,7 +5,6 @@
 ._*
 .idea/
 .vscode/
-browser/*.js
 build/
 lib/*.js
 node_modules/
