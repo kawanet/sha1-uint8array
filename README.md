@@ -3,6 +3,8 @@
 [![Node.js CI](https://github.com/kawanet/sha1-uint8array/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/kawanet/sha1-uint8array/actions/)
 [![npm version](https://badge.fury.io/js/sha1-uint8array.svg)](https://www.npmjs.com/package/sha1-uint8array)
 
+Fast SHA-1 digest hash based on Uint8Array, pure JavaScript.
+
 ## SYNOPSIS
 
 ```js
@@ -26,18 +28,19 @@ for detail.
 Node.js's native `crypto` module run faster than others on Node.js.
 `sha1-uint8array` runs well both on Node.js and browsers with its smaller footprint.
 
-|module|version|node.js V14|Chrome 87|minified|backend|note|
-|---|---|---|---|---|---|---|
-|[crypto](https://nodejs.org/api/crypto.html)|-|97ms|-|-|OpenSSL||
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.1.0|239ms|408ms|2KB|Uint8Array|👍|
-|[tiny-sha1](https://npmjs.com/package/tiny-sha1)|0.2.1|213ms|570ms|2KB|Uint8Array|tiny-sha1/dist/tiny-sha1.js|
-|[jssha](https://npmjs.com/package/jssha)|3.2.0|515ms|627ms|9KB|Uint8Array|jssha/dist/sha1.js|
-|[sha.js](https://npmjs.com/package/sha.js)|2.4.11|335ms|715ms|26KB|Buffer|sha.js/sha1.js|
-|[create-hash](https://npmjs.com/package/create-hash)|1.2.0|419ms|756ms|97KB|Buffer|create-hash/browser.js|
-|[crypto-js](https://npmjs.com/package/crypto-js)|4.0.0|722ms|821ms|38KB|Buffer|crypto-js/sha1.js|
-|[jshashes](https://npmjs.com/package/jshashes)|1.0.8|580ms|1,123ms|23KB|Array|jshashes/hashes.js|
+|module|version|node.js V14|Chrome 87|Safari 14|minified|backend|note|
+|---|---|---|---|---|---|---|---|
+|[crypto](https://nodejs.org/api/crypto.html)|-|102ms 👍|-|-|-|OpenSSL|👍 on node.js|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.1.1|242ms|406ms 👍|231ms 👍|2KB|Uint8Array|👍 on browsers|
+|[tiny-sha1](https://npmjs.com/package/tiny-sha1)|0.2.1|215ms|564ms|2,318ms|2KB|Uint8Array|tiny-sha1/dist/tiny-sha1.js|
+|[jssha](https://npmjs.com/package/jssha)|3.2.0|534ms|615ms|671ms|9KB|Uint8Array|jssha/dist/sha1.js|
+|[sha.js](https://npmjs.com/package/sha.js)|2.4.11|336ms|712ms|3,253ms|26KB|Buffer|sha.js/sha1.js|
+|[create-hash](https://npmjs.com/package/create-hash)|1.2.0|440ms|750ms|3,290ms|97KB|Buffer|create-hash/browser.js|
+|[crypto-js](https://npmjs.com/package/crypto-js)|4.0.0|732ms|810ms|969ms|38KB|Buffer|crypto-js/sha1.js|
+|[jshashes](https://npmjs.com/package/jshashes)|1.0.8|598ms|1,109ms|685ms|23KB|Array|jshashes/hashes.js|
 
-The benchmark source code is included in the git repository.
+The benchmark result above is tested on macOS 10.15.7 Intel Core i7 3.2GHz.
+You could run the benchmark as below.
 
 ```sh
 # run the benchmark on Node.js
@@ -45,7 +48,7 @@ REPEAT=100 mocha test/99.benchmark.js
 
 # run tests and the benchmark on browser
 make -C browser
-open ../browser/test.html
+open browser/test.html
 ```
 
 ## BROWSER

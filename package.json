@@ -1,6 +1,6 @@
 {
   "name": "sha1-uint8array",
-  "description": "createHash('sha1').update(str).digest('hex')",
+  "description": "Fast SHA-1 digest hash based on Uint8Array, pure JavaScript.",
   "version": "0.1.1",
   "author": "Yusuke Kawasaki <u-suke@kawa.net>",
   "bugs": {
