@@ -1,6 +1,6 @@
 # sha1-uint8array
 
-[![Node.js CI](https://github.com/kawanet/sha1-uint8array/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/kawanet/sha1-uint8array/actions/)
+[![Node.js CI](https://github.com/kawanet/sha1-uint8array/workflows/Node.js%20CI/badge.svg?branch=main)](https://github.com/kawanet/sha1-uint8array/actions/)
 [![npm version](https://badge.fury.io/js/sha1-uint8array.svg)](https://www.npmjs.com/package/sha1-uint8array)
 
 Fast SHA-1 digest hash based on Uint8Array, pure JavaScript.
@@ -20,7 +20,7 @@ const hash2 = createHash("sha1").update(data).digest();
 ```
 
 See TypeScript declaration
-[sha1-uint8array.d.ts](https://github.com/kawanet/sha1-uint8array/blob/master/types/sha1-uint8array.d.ts)
+[sha1-uint8array.d.ts](https://github.com/kawanet/sha1-uint8array/blob/main/types/sha1-uint8array.d.ts)
 for detail.
 
 ## BENCHMARK
@@ -72,7 +72,7 @@ open browser/test.html
 
 ## MIT LICENSE
 
-Copyright (c) 2020 Yusuke Kawasaki
+Copyright (c) 2020-2021 Yusuke Kawasaki
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
