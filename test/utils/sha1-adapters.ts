@@ -1,20 +1,21 @@
 /**
- * An interface which has sha1() method
+ * An interface which has digest() method
  */
 
-export interface SHA1Adapter {
-    sha1(str: string): string;
+export interface Adapter {
+    hash(str: string): string;
 }
 
 /**
- * sha1-typedarray
+ * sha1-uint8array
  */
 
-export class SHA1Uint8Array {
+export class SHA1Uint8Array implements Adapter {
     private createHash = require("../../lib/sha1-uint8array").createHash;
+
     // private createHash = require("../../dist/sha1-uint8array.min").createHash;
 
-    sha1(str: string): string {
+    hash(str: string): string {
         return this.createHash("sha1").update(str).digest("hex");
     }
 }
@@ -23,10 +24,10 @@ export class SHA1Uint8Array {
  * https://nodejs.org/api/crypto.html
  */
 
-export class CryptoAdapter implements SHA1Adapter {
+export class Crypto implements Adapter {
     private crypto = require("crypto");
 
-    sha1(str: string): string {
+    hash(str: string): string {
         return this.crypto.createHash("sha1").update(str).digest("hex");
     }
 }
@@ -35,10 +36,10 @@ export class CryptoAdapter implements SHA1Adapter {
  * https://www.npmjs.com/package/create-hash
  */
 
-export class CreateHash implements SHA1Adapter {
+export class CreateHash implements Adapter {
     private createHash = require("create-hash/browser");
 
-    sha1(str: string): string {
+    hash(str: string): string {
         return this.createHash("sha1").update(str).digest("hex");
     }
 }
@@ -47,10 +48,10 @@ export class CreateHash implements SHA1Adapter {
  * https://www.npmjs.com/package/crypto-js
  */
 
-export class CryptoJsAdapter implements SHA1Adapter {
+export class CryptoJs implements Adapter {
     private SHA1 = require("crypto-js/sha1");
 
-    sha1(str: string): string {
+    hash(str: string): string {
         return this.SHA1(str).toString();
     }
 }
@@ -59,10 +60,10 @@ export class CryptoJsAdapter implements SHA1Adapter {
  * https://www.npmjs.com/package/jshashes
  */
 
-export class JsHashesAdapter implements SHA1Adapter {
+export class JsHashes implements Adapter {
     private Hashes = require("jshashes");
 
-    sha1(str: string): string {
+    hash(str: string): string {
         return new this.Hashes.SHA1().hex(str);
     }
 }
@@ -71,10 +72,10 @@ export class JsHashesAdapter implements SHA1Adapter {
  * https://www.npmjs.com/package/jssha
  */
 
-export class JsSHAAdapter implements SHA1Adapter {
+export class JsSHA implements Adapter {
     private jsSHA1 = require("jssha/dist/sha1");
 
-    sha1(str: string): string {
+    hash(str: string): string {
         const shaObj = new this.jsSHA1("SHA-1", "TEXT");
         shaObj.update(str);
         return shaObj.getHash("HEX");
@@ -85,10 +86,10 @@ export class JsSHAAdapter implements SHA1Adapter {
  * https://www.npmjs.com/package/sha.js
  */
 
-export class ShaJSAdapter implements SHA1Adapter {
+export class ShaJS implements Adapter {
     private Sha1 = require("sha.js/sha1");
 
-    sha1(str: string): string {
+    hash(str: string): string {
         return new this.Sha1().update(str).digest("hex");
     }
 }
@@ -97,10 +98,10 @@ export class ShaJSAdapter implements SHA1Adapter {
  * https://www.npmjs.com/package/tiny-sha1
  */
 
-export class TinySha1 implements SHA1Adapter {
+export class TinySha1 implements Adapter {
     private TinySha1 = require("tiny-sha1");
 
-    sha1(str: string): string {
+    hash(str: string): string {
         const buf = Buffer.from(str);
         return this.TinySha1(buf);
     }
@@ -110,10 +111,10 @@ export class TinySha1 implements SHA1Adapter {
  * https://github.com/indutny/hash.js
  */
 
-export class HashJs implements SHA1Adapter {
-    private _sha1 = require("hash.js/lib/hash/sha/1");
+export class HashJs implements Adapter {
+    private hashJs = require("hash.js/lib/hash/sha/1");
 
-    sha1(str: string): string {
-        return this._sha1().update(str).digest('hex');
+    hash(str: string): string {
+        return this.hashJs().update(str).digest('hex');
     }
 }
