@@ -33,6 +33,7 @@ Node.js's native `crypto` module run faster than others on Node.js.
 |---|---|---|---|---|---|---|---|
 |[crypto](https://nodejs.org/api/crypto.html)|-|102ms 👍|-|-|-|OpenSSL|👍 on node.js|
 |[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.8.0|246ms|415ms 👍|212ms 👍|2KB|Uint8Array|👍 on browsers|
+|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|519ms|554ms|833ms|7KB|Array|hash.js/lib/hash/sha/1.js|
 |[tiny-sha1](https://npmjs.com/package/tiny-sha1)|0.2.1|215ms|564ms|2,318ms|2KB|Uint8Array|tiny-sha1/dist/tiny-sha1.js|
 |[jssha](https://npmjs.com/package/jssha)|3.2.0|534ms|615ms|671ms|9KB|Uint8Array|jssha/dist/sha1.js|
 |[sha.js](https://npmjs.com/package/sha.js)|2.4.11|336ms|712ms|3,253ms|26KB|Buffer|sha.js/sha1.js|

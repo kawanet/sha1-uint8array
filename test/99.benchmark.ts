@@ -28,6 +28,8 @@ describe(TESTNAME, () => {
 
     runTests("create-hash/browser", new A.CreateHash());
 
+    runTests("hash.js", new A.HashJs());
+
     runTests("jssha", new A.JsSHAAdapter());
 
     runTests("jshashes", new A.JsHashesAdapter());

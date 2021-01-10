@@ -105,3 +105,15 @@ export class TinySha1 implements SHA1Adapter {
         return this.TinySha1(buf);
     }
 }
+
+/**
+ * https://github.com/indutny/hash.js
+ */
+
+export class HashJs implements SHA1Adapter {
+    private _sha1 = require("hash.js/lib/hash/sha/1");
+
+    sha1(str: string): string {
+        return this._sha1().update(str).digest('hex');
+    }
+}
