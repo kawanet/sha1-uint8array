@@ -224,6 +224,6 @@ function ft(s: number, b: number, c: number, d: number) {
 }
 
 function isBE(): boolean {
-    const buf = new Uint8Array(new Uint16Array([0xFFFE]).buffer); // BOM
-    return (buf[0] === 0xFF);
+    const buf = new Uint8Array(new Uint16Array([0xFEFF]).buffer); // BOM
+    return (buf[0] === 0xFE);
 }
