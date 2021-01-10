@@ -15,7 +15,7 @@ export class SHA1Uint8Array {
     // private createHash = require("../../dist/sha1-uint8array.min").createHash;
 
     sha1(str: string): string {
-        return this.createHash().update(str).digest("hex");
+        return this.createHash("sha1").update(str).digest("hex");
     }
 }
 

@@ -21,7 +21,14 @@ const enum N {
     allocTotal = allocBytes * 100,
 }
 
-export function createHash(algorithm?: string) {
+const algorithms: { [algorithm: string]: number } = {
+    sha1: 1,
+};
+
+export function createHash(algorithm: string) {
+    if (!algorithms[algorithm]) {
+        throw new Error("Digest method not supported");
+    }
     return new Hash();
 }
 
