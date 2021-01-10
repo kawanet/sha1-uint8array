@@ -1,7 +1,6 @@
 {
   "include": [
-    "../lib",
-    "../test"
+    "../lib"
   ],
   "compilerOptions": {
     "module": "commonjs",
