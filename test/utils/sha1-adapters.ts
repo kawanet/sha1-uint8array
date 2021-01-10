@@ -6,14 +6,16 @@ export interface Adapter {
     hash(str: string): string;
 }
 
+const isBrowser = ("undefined" !== typeof window);
+
 /**
  * sha1-uint8array
  */
 
 export class SHA1Uint8Array implements Adapter {
-    private createHash = require("../../lib/sha1-uint8array").createHash;
-
-    // private createHash = require("../../dist/sha1-uint8array.min").createHash;
+    private createHash = isBrowser
+        ? require("../../dist/sha1-uint8array.min").createHash
+        : require("../../lib/sha1-uint8array").createHash;
 
     hash(str: string): string {
         return this.createHash("sha1").update(str).digest("hex");
