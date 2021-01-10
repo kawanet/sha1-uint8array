@@ -51,10 +51,10 @@ export class CreateHash implements Adapter {
  */
 
 export class CryptoJs implements Adapter {
-    private SHA1 = require("crypto-js/sha1");
+    private CryptoJS = require("crypto-js");
 
     hash(str: string): string {
-        return this.SHA1(str).toString();
+        return this.CryptoJS.SHA1(str).toString();
     }
 }
 
