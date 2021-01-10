@@ -10,6 +10,10 @@ describe(TESTNAME, () => {
     it("Error: Digest method not supported", () => {
         assert.throws(() => crypto.createHash("invalid"));
 
-        assert.throws(() => createHash("invalid"));
+        assert.throws(() => createHash("invalid"), 'createHash("invalid")');
+
+        assert.doesNotThrow(() => createHash("sha1"), 'createHash("sha1")');
+
+        assert.doesNotThrow(() => createHash(), 'createHash()');
     });
 });

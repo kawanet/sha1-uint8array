@@ -25,8 +25,8 @@ const algorithms: { [algorithm: string]: number } = {
     sha1: 1,
 };
 
-export function createHash(algorithm: string) {
-    if (!algorithms[algorithm]) {
+export function createHash(algorithm?: string) {
+    if (algorithm && !algorithms[algorithm]) {
         throw new Error("Digest method not supported");
     }
     return new Hash();

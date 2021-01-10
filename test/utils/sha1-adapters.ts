@@ -18,7 +18,7 @@ export class SHA1Uint8Array implements Adapter {
         : require("../../lib/sha1-uint8array").createHash;
 
     hash(str: string): string {
-        return this.createHash("sha1").update(str).digest("hex");
+        return this.createHash().update(str).digest("hex");
     }
 }
 
