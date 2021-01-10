@@ -84,7 +84,7 @@ class Hash {
     private _utf8(text: string): this {
         const {bytes, words} = this;
         const {length} = text;
-        let surrogate = 0 | 0;
+        let surrogate = 0;
 
         for (let offset = 0; offset < length;) {
             const start = this.cursor % N.inputBytes;
@@ -143,7 +143,7 @@ class Hash {
         }
 
         for (i = 0; i < N.workWords; i++) {
-            const S = ~~(i / 20);
+            const S = (i / 20) | 0;
             const T = (rotate5(A) + ft(S, B, C, D) + E + W[i] + K[S]) | 0;
             E = D;
             D = C;
@@ -152,11 +152,11 @@ class Hash {
             A = T;
         }
 
-        this.A = (A + this.A) | 0
-        this.B = (B + this.B) | 0
-        this.C = (C + this.C) | 0
-        this.D = (D + this.D) | 0
-        this.E = (E + this.E) | 0
+        this.A = (A + this.A) | 0;
+        this.B = (B + this.B) | 0;
+        this.C = (C + this.C) | 0;
+        this.D = (D + this.D) | 0;
+        this.E = (E + this.E) | 0;
     }
 
     digest(): Uint8Array;
@@ -181,15 +181,17 @@ class Hash {
 
         this._block();
 
-        return this._digest(encoding);
+        return (encoding === "hex") ? this._hex() : this._bin();
     }
 
-    private _digest(encoding: string): string | Uint8Array {
-        const {A, B, C, D, E, bytes, words} = this;
+    private _hex(): string {
+        const {A, B, C, D, E} = this;
 
-        if (encoding === "hex") {
-            return hex32(A) + hex32(B) + hex32(C) + hex32(D) + hex32(E);
-        }
+        return hex32(A) + hex32(B) + hex32(C) + hex32(D) + hex32(E);
+    }
+
+    private _bin(): Uint8Array {
+        const {A, B, C, D, E, bytes, words} = this;
 
         words[0] = swap32(A);
         words[1] = swap32(B);
@@ -218,9 +220,9 @@ const rotate5: NN = num => (num << 5) | (num >>> 27);
 const rotate30: NN = num => (num << 30) | (num >>> 2);
 
 function ft(s: number, b: number, c: number, d: number) {
-    if (s === 0) return (b & c) | ((~b) & d)
-    if (s === 2) return (b & c) | (b & d) | (c & d)
-    return b ^ c ^ d
+    if (s === 0) return (b & c) | ((~b) & d);
+    if (s === 2) return (b & c) | (b & d) | (c & d);
+    return b ^ c ^ d;
 }
 
 function isBE(): boolean {
