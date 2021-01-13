@@ -40,6 +40,7 @@ class Hash {
     private bytes: Uint8Array;
     private words: Int32Array;
     private cursor = 0;
+    private _sp = 0; // surrogate pair
 
     constructor() {
         if (!sharedBuffer || sharedOffset >= N.allocTotal) {
@@ -83,7 +84,7 @@ class Hash {
     private _utf8(text: string): this {
         const {bytes, words} = this;
         const {length} = text;
-        let surrogate = 0;
+        let surrogate = this._sp;
 
         for (let offset = 0; offset < length;) {
             const start = this.cursor % N.inputBytes;
@@ -125,6 +126,7 @@ class Hash {
             this.cursor += index - start;
         }
 
+        this._sp = surrogate;
         return this;
     }
 
