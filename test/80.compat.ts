@@ -8,21 +8,21 @@ const TESTNAME = __filename.replace(/^.*\//, "");
 describe(TESTNAME, () => {
     it("crypto", testFor(new A.Crypto()));
 
-    it("crypto-js", testFor(new A.CryptoJs()));
-
-    it("create-hash/browser", testFor(new A.CreateHash()));
+    it("sha1-uint8array", testFor(new A.SHA1Uint8Array()));
 
     it("hash.js", testFor(new A.HashJs()));
 
     it("jssha", testFor(new A.JsSHA()));
 
+    it("crypto-js", testFor(new A.CryptoJs()));
+
     it("jshashes", testFor(new A.JsHashes()));
+
+    it("tiny-sha1", testFor(new A.TinySha1()));
 
     it("sha.js", testFor(new A.ShaJS()));
 
-    it("sha1-uint8array", testFor(new A.SHA1Uint8Array()));
-
-    it("tiny-sha1", testFor(new A.TinySha1()));
+    it("create-hash/browser", testFor(new A.CreateHash()));
 });
 
 function testFor(adapter: A.Adapter) {

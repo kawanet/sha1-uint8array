@@ -31,15 +31,15 @@ Node.js's native `crypto` module run faster than others on Node.js.
 
 |module|version|node.js V14|Chrome 87|Safari 14|minified|backend|note|
 |---|---|---|---|---|---|---|---|
-|[crypto](https://nodejs.org/api/crypto.html)|-|76m 👍s|-|-|-|OpenSSL|👍 on node.js|
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.9.0|232ms|362ms 👍|208ms 👍|2KB 👍|Uint8Array|👍 on browsers|
-|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|514ms|592ms|936ms|7KB|Array|hash.js/lib/hash/sha/1.js|
-|[jssha](https://npmjs.com/package/jssha)|3.2.0|713ms|824ms|777ms|9KB|Uint8Array|jssha/dist/sha1.js|
-|[crypto-js](https://npmjs.com/package/crypto-js)|4.0.0|790ms|868ms|1006ms|108KB|Uint8Array|crypto-js/sha1.js|
-|[jshashes](https://npmjs.com/package/jshashes)|1.0.8|697ms|1590ms|851ms|23KB|Array|jshashes/hashes.js|
-|[tiny-sha1](https://npmjs.com/package/tiny-sha1)|0.2.1|193ms|534ms|2548ms|2KB|Uint8Array|tiny-sha1/dist/tiny-sha1.js|
-|[sha.js](https://npmjs.com/package/sha.js)|2.4.11|354ms|698ms|3629ms|26KB|Buffer|sha.js/sha1.js|
-|[create-hash](https://npmjs.com/package/create-hash)|1.2.0|433ms|745ms|3686ms|97KB|Buffer|create-hash/browser.js|
+|[crypto](https://nodejs.org/api/crypto.html)|-|70ms 👍|-|-|-|OpenSSL|👍 on node.js|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.9.0|218ms|346ms 👍|192ms 👍|2KB 👍|Uint8Array|👍 on browsers|
+|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|513ms|573ms|908ms|7KB|Array|hash.js/lib/hash/sha/1.js|
+|[jssha](https://npmjs.com/package/jssha)|3.2.0|690ms|782ms|770ms|9KB|Uint8Array|jssha/dist/sha1.js|
+|[crypto-js](https://npmjs.com/package/crypto-js)|4.0.0|779ms|829ms|961ms|108KB|Uint8Array|crypto-js/sha1.js|
+|[jshashes](https://npmjs.com/package/jshashes)|1.0.8|686ms|1,448ms|727ms|23KB|Array|jshashes/hashes.js|
+|[tiny-sha1](https://npmjs.com/package/tiny-sha1)|0.2.1|209ms|775ms|3,573ms|2KB|Uint8Array|tiny-sha1/dist/tiny-sha1.js|
+|[sha.js](https://npmjs.com/package/sha.js)|2.4.11|360ms|930ms|3,534ms|26KB|Buffer|sha.js/sha1.js|
+|[create-hash](https://npmjs.com/package/create-hash)|1.2.0|387ms|976ms|3,591ms|97KB|Buffer|create-hash/browser.js|
 
 The benchmark result above is tested on macOS 10.15.7 Intel Core i7 3.2GHz. You could run the benchmark as below.
 
@@ -77,6 +77,7 @@ open browser/test.html
 ## LINKS
 
 - https://www.npmjs.com/package/sha1-uint8array
+- https://www.npmjs.com/package/sha256-uint8array
 - https://github.com/kawanet/sha1-uint8array
 - https://github.com/kawanet/sha1-uint8array/blob/main/types/sha1-uint8array.d.ts
 
