@@ -92,15 +92,7 @@ class Hash {
 
             while (offset < length && index < N.inputBytes) {
                 let code = text.charCodeAt(offset++) | 0;
-                if (surrogate) {
-                    // 4 bytes - surrogate pair
-                    code = ((surrogate & 0x3FF) << 10) + (code & 0x3FF) + 0x10000;
-                    bytes[index++] = 0xF0 | (code >>> 18);
-                    bytes[index++] = 0x80 | ((code >>> 12) & 0x3F);
-                    bytes[index++] = 0x80 | ((code >>> 6) & 0x3F);
-                    bytes[index++] = 0x80 | (code & 0x3F);
-                    surrogate = 0;
-                } else if (code < 0x80) {
+                if (code < 0x80) {
                     // ASCII characters
                     bytes[index++] = code;
                 } else if (code < 0x800) {
@@ -112,8 +104,15 @@ class Hash {
                     bytes[index++] = 0xE0 | (code >>> 12);
                     bytes[index++] = 0x80 | ((code >>> 6) & 0x3F);
                     bytes[index++] = 0x80 | (code & 0x3F);
-                } else {
+                } else if (surrogate) {
                     // 4 bytes - surrogate pair
+                    code = ((surrogate & 0x3FF) << 10) + (code & 0x3FF) + 0x10000;
+                    bytes[index++] = 0xF0 | (code >>> 18);
+                    bytes[index++] = 0x80 | ((code >>> 12) & 0x3F);
+                    bytes[index++] = 0x80 | ((code >>> 6) & 0x3F);
+                    bytes[index++] = 0x80 | (code & 0x3F);
+                    surrogate = 0;
+                } else {
                     surrogate = code;
                 }
             }
