@@ -15,7 +15,6 @@ const enum N {
     highIndex = inputWords - 2,
     lowIndex = inputWords - 1,
     workWords = 80,
-    finalSize = highIndex * 4,
     allocBytes = 80,
     allocWords = allocBytes / 4,
     allocTotal = allocBytes * 100,
@@ -163,14 +162,26 @@ class Hash {
     digest(encoding: string): string;
     digest(encoding?: string) {
         const {bytes, words} = this;
-        const index = this.cursor % N.inputBytes;
+        let i = (this.cursor % N.inputBytes) | 0;
+        bytes[i++] = 0x80;
 
-        bytes[index] = 0x80;
-        bytes.fill(0, index + 1);
+        while (i & 3) {
+            bytes[i++] = 0;
+        }
 
-        if (index >= N.finalSize) {
+        i >>= 2;
+
+        if (i > N.highIndex) {
+            while (i < N.allocWords) {
+                words[i++] = 0;
+            }
+            i = 0;
+
             this._block();
-            words.fill(0);
+        }
+
+        while (i < N.allocWords) {
+            words[i++] = 0;
         }
 
         const bits64 = this.cursor * 8;
