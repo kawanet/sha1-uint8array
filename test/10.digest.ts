@@ -68,12 +68,12 @@ describe(TESTNAME, () => {
 
     it("UTF-8 characters", () => {
         const input = MAKURANOSOSHI;
-        assert.equal(crypto.createHash("sha1").update(input).digest("hex"), "2bed426b24f5e9b37866721b7e0e2509342bcd05", "crypto");
-        assert.equal(createHash().update(input).digest("hex"), "2bed426b24f5e9b37866721b7e0e2509342bcd05", "single text at once");
+        assert.equal(crypto.createHash("sha1").update(input).digest("hex"), "4d803abf4a93e7b4094034935a0ec4502a67954a", "crypto");
+        assert.equal(createHash().update(input).digest("hex"), "4d803abf4a93e7b4094034935a0ec4502a67954a", "single text at once");
 
         const hash = createHash("sha1");
         input.split(/(\n)/).forEach(s => hash.update(s));
-        assert.equal(hash.digest("hex"), "2bed426b24f5e9b37866721b7e0e2509342bcd05", "chunked text");
+        assert.equal(hash.digest("hex"), "4d803abf4a93e7b4094034935a0ec4502a67954a", "chunked text");
     });
 });
 
