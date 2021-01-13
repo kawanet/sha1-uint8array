@@ -6,9 +6,10 @@ all: ../dist/sha1-uint8array.min.js ../build/test.js
 	../node_modules/.bin/terser -c -m --mangle-props "regex=/^_/" --ecma 5 -o $@ $<
 
 ../build/sha1-uint8array.browser.js: ../build/sha1-uint8array.js
-	echo 'var createHash = (function(exports){' > $@
+	echo 'var SHA1 = ("undefined" !== typeof exports ? exports : {});' > $@
+	echo '!(function(exports) {' >> $@
 	cat $< >> $@
-	echo 'return createHash;})(("undefined" !== typeof exports) && exports || this || {})' >> $@
+	echo '})(SHA1)' >> $@
 	perl -i -pe 's#^("use strict"|Object.defineProperty|exports.*= void 0)#// $$&#' $@
 
 ../build/sha1-uint8array.js: ../lib/*.ts

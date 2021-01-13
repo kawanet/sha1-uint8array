@@ -65,11 +65,11 @@ open browser/test.html
 <script src="https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js"></script>
 <script>
     const text = "";
-    const hex = createHash().update(text).digest("hex");
+    const hex = SHA1.createHash().update(text).digest("hex");
     // => "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     
     const data = new Uint8Array(0);
-    const hash = createHash().update(data).digest();
+    const hash = SHA1.createHash().update(data).digest();
     // => <Uint8Array da 39 a3 ee 5e 6b 4b 0d 32 55 bf ef 95 60 18 90 af d8 07 09>
 </script>
 ```
