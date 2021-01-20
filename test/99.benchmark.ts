@@ -35,6 +35,8 @@ describe(TESTNAME, () => {
 
     it("create-hash/browser", testFor(new A.CreateHash()));
 
+    (A.SubtleCrypto.available ? it : it.skip)('crypto.subtle.digest()', testAsync(new A.SubtleCrypto()));
+
     function testFor(adapter: A.Adapter) {
         return function (this: Mocha.Context) {
             this.timeout(10000);
@@ -42,6 +44,17 @@ describe(TESTNAME, () => {
             for (let i = 0; i < REPEAT; i++) {
                 assert.equal(adapter.hash(sampleJSON), expectJSON);
                 assert.equal(adapter.hash(sampleUTF8), expectUTF8);
+            }
+        };
+    }
+
+    function testAsync(adapter: A.AsyncAdapter) {
+        return async function (this: Mocha.Context) {
+            this.timeout(10000);
+
+            for (let i = 0; i < REPEAT; i++) {
+                assert.equal(await adapter.hash(sampleJSON), expectJSON);
+                assert.equal(await adapter.hash(sampleUTF8), expectUTF8);
             }
         };
     }
