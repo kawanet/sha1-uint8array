@@ -45,6 +45,7 @@ The benchmark result above is tested on macOS 10.15.7 Intel Core i7 3.2GHz. You 
 
 ```sh
 git clone https://github.com/kawanet/sha1-uint8array.git
+cd sha1-uint8array
 npm install
 npm run build
 
