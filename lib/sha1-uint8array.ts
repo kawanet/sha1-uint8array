@@ -55,15 +55,54 @@ class Hash {
 
     update(data: string, encoding?: string): this;
     update(data: Uint8Array): this;
-    update(data: string | Uint8Array): this {
+    update(data: ArrayBufferView): this;
+
+    update(data: string | Uint8Array | ArrayBufferView): this {
+        // data: string
         if ("string" === typeof data) {
             return this._utf8(data);
         }
 
-        const {_byte} = this;
-        const length = data.length;
+        // data: undefined
+        if (data == null) {
+            throw new TypeError("Invalid type: " + typeof data);
+        }
 
-        for (let offset = 0; offset < length;) {
+        const byteOffset = data.byteOffset;
+        const length = data.byteLength;
+        let blocks = (length / N.inputBytes) | 0;
+        let offset = 0;
+
+        // longer than 1 block
+        if (blocks && !(byteOffset & 3) && !(this._size % N.inputBytes)) {
+            const block = new Int32Array(data.buffer, byteOffset, blocks * N.inputWords);
+            while (blocks--) {
+                this._int32(block, offset >> 2);
+                offset += N.inputBytes;
+            }
+            this._size += offset;
+        }
+
+        // data: TypedArray | DataView
+        const BYTES_PER_ELEMENT = (data as Uint8Array).BYTES_PER_ELEMENT;
+        if (BYTES_PER_ELEMENT !== 1 && data.buffer) {
+            const rest = new Uint8Array(data.buffer, byteOffset + offset, length - offset);
+            return this._uint8(rest);
+        }
+
+        // no more bytes
+        if (offset === length) return this;
+
+        // data: Uint8Array | Int8Array
+        return this._uint8(data as any, offset);
+    }
+
+    private _uint8(data: Uint8Array, offset?: number) {
+        const {_byte, _word} = this;
+        const length = data.length;
+        offset |= 0;
+
+        while (offset < length) {
             const start = this._size % N.inputBytes;
             let index = start;
 
@@ -72,7 +111,7 @@ class Hash {
             }
 
             if (index >= N.inputBytes) {
-                this._block();
+                this._int32(_word);
             }
 
             this._size += index - start;
@@ -118,7 +157,7 @@ class Hash {
             }
 
             if (index >= N.inputBytes) {
-                this._block();
+                this._int32(_word);
                 _word[0] = _word[N.inputWords];
             }
 
@@ -129,13 +168,13 @@ class Hash {
         return this;
     }
 
-    private _block(): void {
-        const {_word} = this;
+    private _int32(data: Int32Array, offset?: number): void {
         let {A, B, C, D, E} = this;
-        let i;
+        let i = 0;
+        offset |= 0;
 
-        for (i = 0; i < N.inputWords; i++) {
-            W[i] = swap32(_word[i]);
+        while (i < N.inputWords) {
+            W[i++] = swap32(data[offset++]);
         }
 
         for (i = N.inputWords; i < N.workWords; i++) {
@@ -166,31 +205,33 @@ class Hash {
         let i = (this._size % N.inputBytes) | 0;
         _byte[i++] = 0x80;
 
+        // pad 0 for current word
         while (i & 3) {
             _byte[i++] = 0;
         }
-
         i >>= 2;
 
         if (i > N.highIndex) {
-            while (i < N.allocWords) {
+            while (i < N.inputWords) {
                 _word[i++] = 0;
             }
             i = 0;
-            this._block();
+            this._int32(_word);
         }
 
-        while (i < N.allocWords) {
+        // pad 0 for rest words
+        while (i < N.inputWords) {
             _word[i++] = 0;
         }
 
+        // input size
         const bits64 = this._size * 8;
         const low32 = (bits64 & 0xffffffff) >>> 0;
         const high32 = (bits64 - low32) / 0x100000000;
         if (high32) _word[N.highIndex] = swap32(high32);
         if (low32) _word[N.lowIndex] = swap32(low32);
 
-        this._block();
+        this._int32(_word);
 
         return (encoding === "hex") ? this._hex() : this._bin();
     }
