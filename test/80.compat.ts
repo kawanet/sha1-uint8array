@@ -1,7 +1,7 @@
 #!/usr/bin/env mocha -R spec
 
 import {strict as assert} from "assert";
-import * as A from "./utils/sha1-adapters";
+import * as A from "./utils/adapters";
 
 const TESTNAME = __filename.replace(/^.*\//, "");
 
@@ -18,12 +18,16 @@ describe(TESTNAME, () => {
 
     it("jshashes", testFor(new A.JsHashes()));
 
-    it("tiny-sha1", testFor(new A.TinySha1()));
+    it("tiny-sha1", testFor(wrapAdapter(new A.TinySha1())));
 
     it("sha.js", testFor(new A.ShaJS()));
 
     it("create-hash/browser", testFor(new A.CreateHash()));
 });
+
+function wrapAdapter<T extends (A.Adapter | A.AsyncAdapter)>(adapter: T): T {
+    return {hash: (data: string) => adapter.hash(Buffer.from(data))} as T;
+}
 
 function testFor(adapter: A.Adapter) {
     return function (this: Mocha.Context) {
