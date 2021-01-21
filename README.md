@@ -19,29 +19,46 @@ const hash = createHash().update(data).digest();
 // => <Uint8Array da 39 a3 ee 5e 6b 4b 0d 32 55 bf ef 95 60 18 90 af d8 07 09>
 ```
 
-The interface is a subset of Node.js's [crypto](https://nodejs.org/api/crypto.html) module.
 See TypeScript declaration
 [sha1-uint8array.d.ts](https://github.com/kawanet/sha1-uint8array/blob/main/types/sha1-uint8array.d.ts)
 for detail.
 
+## COMPATIBILITY
+
+It has a better compatibility with Node.js's `crypto` module in its smaller footprint.
+
+|module|string IN|Uint8Array IN|DataView IN|hex OUT|Uint8Array OUT|minified|
+|---|---|---|---|---|---|---|
+|[crypto](https://nodejs.org/api/crypto.html)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|-|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|3KB|
+|[hash.js](https://www.npmjs.com/package/hash.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|17KB|
+|[jssha](https://npmjs.com/package/jssha)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|10KB|
+|[crypto-js](https://npmjs.com/package/crypto-js)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|109KB|
+|[jshashes](https://npmjs.com/package/jshashes)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|23KB|
+|[sha.js](https://npmjs.com/package/sha.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|26KB|
+|[create-hash](https://npmjs.com/package/create-hash)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|95KB|
+|[tiny-sha1](https://npmjs.com/package/tiny-sha1)|🚫 NO|✅ OK|🚫 NO|✅ OK|🚫 NO|2KB|
+|[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|🚫 NO|✅ OK|✅ OK|🚫 NO|🚫 NO|-|
+
 ## BENCHMARK
 
-Node.js's native `crypto` module run faster than others on Node.js.
-`sha1-uint8array` runs well both on Node.js and browsers with its smaller footprint.
+It runs well both on Node.js and browsers.
+Node.js's native `crypto` module definitely runs faster than any others on Node.js, though.
 
-|module|version|node.js V14|Chrome 87|Safari 14|minified|backend|note|
-|---|---|---|---|---|---|---|---|
-|[crypto](https://nodejs.org/api/crypto.html)|-|70ms 👍|-|-|-|OpenSSL|👍 on node.js|
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.9.0|218ms|346ms 👍|192ms 👍|2KB 👍|Uint8Array|👍 on browsers|
-|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|513ms|573ms|908ms|7KB|Array|hash.js/lib/hash/sha/1.js|
-|[jssha](https://npmjs.com/package/jssha)|3.2.0|690ms|782ms|770ms|9KB|Uint8Array|jssha/dist/sha1.js|
-|[crypto-js](https://npmjs.com/package/crypto-js)|4.0.0|779ms|829ms|961ms|108KB|Uint8Array|crypto-js/sha1.js|
-|[jshashes](https://npmjs.com/package/jshashes)|1.0.8|686ms|1,448ms|727ms|23KB|Array|jshashes/hashes.js|
-|[tiny-sha1](https://npmjs.com/package/tiny-sha1)|0.2.1|209ms|775ms|3,573ms|2KB|Uint8Array|tiny-sha1/dist/tiny-sha1.js|
-|[sha.js](https://npmjs.com/package/sha.js)|2.4.11|360ms|930ms|3,534ms|26KB|Buffer|sha.js/sha1.js|
-|[create-hash](https://npmjs.com/package/create-hash)|1.2.0|387ms|976ms|3,591ms|97KB|Buffer|create-hash/browser.js|
+|module|version|node.js V14|Chrome 87|Safari 14|
+|---|---|---|---|---|
+|[crypto](https://nodejs.org/api/crypto.html)|-|69ms 👍|N/A|N/A|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.10.0|251ms|352ms 👍|202ms 👍|
+|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|500ms|619ms|882ms|
+|[jssha](https://npmjs.com/package/jssha)|3.2.0|720ms|799ms|747ms|
+|[crypto-js](https://npmjs.com/package/crypto-js)|4.0.0|765ms|842ms|991ms|
+|[jshashes](https://npmjs.com/package/jshashes)|1.0.8|674ms|1,498ms|721ms|
+|[sha.js](https://npmjs.com/package/sha.js)|2.4.11|361ms|964ms|3,487ms|
 
-The benchmark result above is tested on macOS 10.15.7 Intel Core i7 3.2GHz. You could run the benchmark as below.
+The benchmark above shows milliseconds for 20,000 times of
+SHA-1 `hex` hash digest generation for approx 1KB string as input.
+It is tested on macOS 10.15.7 Intel Core i7 3.2GHz.
+You could run the benchmark as below.
 
 ```sh
 git clone https://github.com/kawanet/sha1-uint8array.git

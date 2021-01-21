@@ -33,4 +33,14 @@ test: dist ../lib/sha1-uint8array.js
 clean:
 	/bin/rm -fr ../build ../dist/*.js ../lib/*.js ../test/*.js
 
+sizes:
+	wc -c ../dist/sha1-uint8array.min.js
+	../node_modules/.bin/browserify ../node_modules/hash.js/lib/hash.js | ../node_modules/.bin/terser -c -m | wc -c
+	wc -c ../node_modules/jssha/dist/sha1.js
+	cat ../node_modules/crypto-js/*.js | ../node_modules/.bin/terser -c -m | wc -c
+	wc -c ../node_modules/jshashes/hashes.min.js
+	../node_modules/.bin/browserify ../node_modules/sha.js/sha1.js | ../node_modules/.bin/terser -c -m | wc -c
+	../node_modules/.bin/browserify ../node_modules/create-hash/browser.js | ../node_modules/.bin/terser -c -m | wc -c
+	cat ../node_modules/tiny-sha1/dist/tiny-sha1.js | ../node_modules/.bin/terser -c -m | wc -c
+
 .PHONY: all clean test
