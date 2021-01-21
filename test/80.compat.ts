@@ -2,10 +2,11 @@
 
 import {strict as assert} from "assert";
 import * as A from "./utils/adapters";
+import {arrayToArrayBuffer} from "./utils/utils";
 
-const TESTNAME = __filename.replace(/^.*\//, "");
+const TITLE = __filename.split("/").pop();
 
-describe(TESTNAME, () => {
+describe(TITLE, () => {
     it("crypto", testFor(new A.Crypto()));
 
     it("sha1-uint8array", testFor(new A.SHA1Uint8Array()));
@@ -26,11 +27,15 @@ describe(TESTNAME, () => {
 });
 
 function wrapAdapter<T extends (A.Adapter | A.AsyncAdapter)>(adapter: T): T {
-    return {hash: (data: string) => adapter.hash(Buffer.from(data))} as T;
+    const wrap = Object.create(adapter);
+    wrap.hash = (data: string) => adapter.hash(Buffer.from(data));
+    return wrap;
 }
 
 function testFor(adapter: A.Adapter) {
     return function (this: Mocha.Context) {
+        if (adapter.noString) return this.skip();
+
         {
             const input = ""; // 0 byte
             assert.equal(adapter.hash(input), "da39a3ee5e6b4b0d3255bfef95601890afd80709", "empty");
@@ -79,6 +84,22 @@ function testFor(adapter: A.Adapter) {
         {
             const input = "El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja."; // 119 bytes
             assert.equal(adapter.hash(input), "475ae9798e1129a81c644ec3702cbbd98a24a455", shorten(input));
+        }
+
+        if (!adapter.noBinary) {
+            const buffer = arrayToArrayBuffer([0, 1, 126, 127, 128, 129, 254, 255]);
+            const expected = "70d948814a441fc26094ad091ea3f5bd3e611b4d";
+
+            assert.equal(adapter.hash(new Uint8Array(buffer)), expected);
+
+            if (!adapter.noDataView) {
+                assert.equal(adapter.hash(new Int8Array(buffer)), expected);
+                assert.equal(adapter.hash(new Int16Array(buffer)), expected);
+                assert.equal(adapter.hash(new Int32Array(buffer)), expected);
+                assert.equal(adapter.hash(new Uint16Array(buffer)), expected);
+                assert.equal(adapter.hash(new Uint32Array(buffer)), expected);
+                assert.equal(adapter.hash(new DataView(buffer)), expected);
+            }
         }
     };
 }

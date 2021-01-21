@@ -24,31 +24,32 @@ describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
 
     describe("input: string => output: hex", () => {
         before(() => SLEEP(100));
-        (isBrowser ? it.skip : it)("crypto", testFor(new A.Crypto()));
+        it("crypto", testFor(new A.Crypto()));
         it("sha1-uint8array", testFor(new A.SHA1Uint8Array()));
         it("hash.js", testFor(new A.HashJs()));
         it("jssha", testFor(new A.JsSHA()));
         it("crypto-js", testFor(new A.CryptoJs()));
         it("jshashes", testFor(new A.JsHashes()));
-        it.skip("tiny-sha1", testFor(new A.TinySha1()));
+        it("tiny-sha1", testFor(new A.TinySha1()));
         it("sha.js", testFor(new A.ShaJS()));
     });
 
     describe("input: Uint8Array => output: hex", () => {
         before(() => SLEEP(100));
-        (isBrowser ? it.skip : it)("crypto", testBinary(new A.Crypto()));
+        it("crypto", testBinary(new A.Crypto()));
         it("sha1-uint8array", testBinary(new A.SHA1Uint8Array()));
         it("hash.js", testBinary(new A.HashJs()));
         it("jssha", testBinary(new A.JsSHA()));
-        it.skip("crypto-js", testBinary(new A.CryptoJs()));
-        it.skip("jshashes", testBinary(new A.JsHashes()));
+        it("crypto-js", testBinary(new A.CryptoJs()));
+        it("jshashes", testBinary(new A.JsHashes()));
         it("tiny-sha1", testBinary(new A.TinySha1()));
         it("sha.js", testBinary(new A.ShaJS()));
-        (A.SubtleCrypto.available ? it : it.skip)("crypto.subtle.digest()", testAsync(new A.SubtleCrypto()));
+        it("crypto.subtle.digest()", testAsync(new A.SubtleCrypto()));
     });
 
     function testFor(adapter: A.Adapter) {
         return function (this: Mocha.Context) {
+            if (adapter.noString) return this.skip();
             this.timeout(10000);
 
             for (let i = 0; i < REPEAT; i++) {
@@ -60,6 +61,7 @@ describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
 
     function testBinary(adapter: A.Adapter) {
         return function (this: Mocha.Context) {
+            if (adapter.noBinary) return this.skip();
             this.timeout(10000);
 
             for (let i = 0; i < REPEAT; i++) {
@@ -71,6 +73,7 @@ describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
 
     function testAsync(adapter: A.AsyncAdapter) {
         return async function (this: Mocha.Context) {
+            if (adapter.noBinary) return this.skip();
             this.timeout(10000);
 
             for (let i = 0; i < REPEAT; i++) {
