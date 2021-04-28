@@ -26,9 +26,7 @@ const hasSubtle = ("undefined" !== typeof crypto) && crypto.subtle && ("function
  */
 
 export class SHA1Uint8Array implements Adapter {
-    private createHash = isBrowser
-        ? require("../../dist/sha1-uint8array.min").createHash
-        : require("../../lib/sha1-uint8array").createHash;
+    private createHash = require("../../").createHash;
 
     hash(data: string | Uint8Array | ArrayBufferView): string {
         return this.createHash().update(data).digest("hex");
