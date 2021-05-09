@@ -16,17 +16,22 @@ dist: ../dist/sha1-uint8array.min.js
 
 # ES5
 test-es5: dist ../build/lib/sha1-uint8array.js
-	cp ../package.json ../build
-	perl -i -pe 's#require\("../"\)#require("../../dist/sha1-uint8array.min")#' ../build/test/*.js
-	perl -i -pe 's#require\("../../"\)#require("../../../dist/sha1-uint8array.min")#' ../build/test/*/*.js
-	../node_modules/.bin/browserify -o ../build/test.js ../build/test/*.js
+	../node_modules/.bin/browserify --list ../build/test/*.js \
+		-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1../browser/import$$2#' ] \
+		-t [ browserify-sed 's#(require\("(?:../)+)(package.json"\))#$$1../$$2#' ] | sort
+	../node_modules/.bin/browserify -o ../build/test.js ../build/test/*.js \
+		-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1../browser/import$$2#' ] \
+		-t [ browserify-sed 's#(require\("(?:../)+)(package.json"\))#$$1../$$2#' ]
 
 ../build/lib/sha1-uint8array.js: ../lib/*.ts ../test/*.ts
 	../node_modules/.bin/tsc -p ../browser
 
 # ES2018
 test: dist ../lib/sha1-uint8array.js
-	../node_modules/.bin/browserify -o ../build/test.js ../test/*.js
+	../node_modules/.bin/browserify --list ../test/*.js \
+		-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1browser/import$$2#' ] | sort
+	../node_modules/.bin/browserify -o ../build/test.js ../test/*.js \
+		-t [ browserify-sed 's#(require\("(?:../)+)("\))#$$1browser/import$$2#' ]
 
 ../lib/sha1-uint8array.js: ../lib/*.ts ../test/*.ts
 	../node_modules/.bin/tsc -p ..
