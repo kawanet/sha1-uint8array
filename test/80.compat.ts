@@ -4,7 +4,7 @@ import {strict as assert} from "assert";
 import * as A from "./utils/adapters";
 import {arrayToArrayBuffer} from "./utils/utils";
 
-const TITLE = __filename.split("/").pop();
+const TITLE = __filename.split("/").pop()!!;
 
 describe(TITLE, () => {
     it("crypto", testFor(new A.Crypto()));
@@ -33,7 +33,7 @@ function wrapAdapter<T extends (A.Adapter | A.AsyncAdapter)>(adapter: T): T {
 }
 
 function testFor(adapter: A.Adapter) {
-    return function (this: Mocha.Context) {
+    return function (this: Mocha.Context): void {
         if (adapter.noString) return this.skip();
 
         {
