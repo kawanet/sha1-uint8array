@@ -1,7 +1,8 @@
 # sha1-uint8array
 
 [![Node.js CI](https://github.com/kawanet/sha1-uint8array/workflows/Node.js%20CI/badge.svg?branch=main)](https://github.com/kawanet/sha1-uint8array/actions/)
-[![npm version](https://badge.fury.io/js/sha1-uint8array.svg)](https://www.npmjs.com/package/sha1-uint8array)
+[![npm version](https://img.shields.io/npm/v/sha1-uint8array)](https://www.npmjs.com/package/sha1-uint8array)
+[![minified size](https://img.shields.io/bundlephobia/min/sha1-uint8array)](https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js)
 
 Fast SHA-1 digest hash based on Uint8Array, pure JavaScript.
 
