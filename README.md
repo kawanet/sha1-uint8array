@@ -9,7 +9,7 @@ Fast SHA-1 digest hash based on Uint8Array, pure JavaScript.
 ## SYNOPSIS
 
 ```js
-const createHash = require("sha1-uint8array").createHash;
+const {createHash} = require("sha1-uint8array");
 
 const text = "";
 const hex = createHash().update(text).digest("hex");
@@ -23,6 +23,12 @@ const hash = createHash().update(data).digest();
 See TypeScript declaration
 [sha1-uint8array.d.ts](https://github.com/kawanet/sha1-uint8array/blob/main/types/sha1-uint8array.d.ts)
 for detail.
+
+## ES MODULE
+
+```js
+import {createHash} from "sha1-uint8array";
+```
 
 ## COMPATIBILITY
 
