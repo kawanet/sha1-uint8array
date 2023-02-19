@@ -1,7 +1,7 @@
 {
   "name": "sha1-uint8array",
   "description": "Fast SHA-1 digest hash based on Uint8Array, pure JavaScript.",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "author": "Yusuke Kawasaki <u-suke@kawa.net>",
   "bugs": {
     "url": "https://github.com/kawanet/sha1-uint8array/issues"
@@ -24,6 +24,10 @@
     "terser": "^5.16.4",
     "tiny-sha1": "^0.2.1",
     "typescript": "^4.9.5"
+  },
+  "exports": {
+    "require": "./lib/sha1-uint8array.js",
+    "import": "./dist/sha1-uint8array.mjs"
   },
   "files": [
     "LICENSE",
