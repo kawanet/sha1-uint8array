@@ -26,8 +26,13 @@
     "typescript": "^5.1.6"
   },
   "exports": {
-    "require": "./lib/sha1-uint8array.js",
-    "import": "./dist/sha1-uint8array.mjs"
+    ".": {
+      "require": "./lib/sha1-uint8array.js",
+      "import": {
+        "default": "./dist/sha1-uint8array.mjs",
+        "types": "./types/sha1-uint8array.d.ts"
+      }
+    }
   },
   "files": [
     "LICENSE",
