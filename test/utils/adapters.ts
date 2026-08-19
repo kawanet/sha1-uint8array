@@ -2,16 +2,16 @@
  * An interface which has digest() method
  */
 
+import {arrayToHex} from "./utils.ts";
+import {sha1 as noble} from "@noble/hashes/legacy.js";
 import createHashBrowser from "create-hash/browser.js";
 import cryptoJs from "crypto-js";
 import hashJs from "hash.js/lib/hash/sha/1.js";
-import jsHashes from "jshashes";
 import jsSha from "jssha/dist/sha1";
+import forgeSha from "node-forge/lib/sha1.js";
 import * as nodeCrypto from "node:crypto";
 import shaJs from "sha.js/sha1.js";
 import {createHash as ownCreateHash} from "sha1-uint8array";
-import tinySha1 from "tiny-sha1";
-import {arrayToHex} from "./utils.ts";
 
 export interface Adapter {
     noString?: boolean;
@@ -98,19 +98,6 @@ export class CryptoJs implements Adapter {
 }
 
 /**
- * https://www.npmjs.com/package/jshashes
- */
-
-export class JsHashes implements Adapter {
-    private Hashes = jsHashes;
-    noBinary = true;
-
-    hash(data: string): string {
-        return new this.Hashes.SHA1().hex(data);
-    }
-}
-
-/**
  * https://www.npmjs.com/package/jssha
  */
 
@@ -140,22 +127,6 @@ export class ShaJS implements Adapter {
 }
 
 /**
- * https://www.npmjs.com/package/tiny-sha1
- *
- * Note: tiny-sha1 only supports Uint8Array but not even string.
- */
-
-export class TinySha1 implements Adapter {
-    private TinySha1 = tinySha1;
-    noString = true;
-    noDataView = true;
-
-    hash(data: Uint8Array): string {
-        return this.TinySha1(data);
-    }
-}
-
-/**
  * https://github.com/indutny/hash.js
  */
 
@@ -165,6 +136,41 @@ export class HashJs implements Adapter {
 
     hash(data: string | Uint8Array): string {
         return this.hashJs().update(data).digest('hex');
+    }
+}
+
+/**
+ * https://www.npmjs.com/package/@noble/hashes
+ *
+ * Note: it rejects a string outright rather than guessing an encoding.
+ */
+
+export class Noble implements Adapter {
+    private hash_ = noble;
+    noString = true;
+    noDataView = true;
+
+    hash(data: Uint8Array): string {
+        return arrayToHex(this.hash_(data));
+    }
+}
+
+/**
+ * https://www.npmjs.com/package/node-forge
+ *
+ * Note: the SHA-1 module is imported on its own; the package root
+ * pulls in the whole crypto suite.
+ */
+
+export class NodeForge implements Adapter {
+    private md = forgeSha;
+    noBinary = true;
+
+    hash(data: string): string {
+        const md = this.md.create();
+        // update() reads a string as latin1 unless the encoding is named.
+        md.update(data, "utf8");
+        return md.digest().toHex();
     }
 }
 

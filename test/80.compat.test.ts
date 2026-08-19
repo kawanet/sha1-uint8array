@@ -20,20 +20,14 @@ describe(TITLE, () => {
 
     it("crypto-js", testFor(new A.CryptoJs()));
 
-    it("jshashes", testFor(new A.JsHashes()));
-
-    it("tiny-sha1", testFor(wrapAdapter(new A.TinySha1())));
-
     it("sha.js", testFor(new A.ShaJS()));
+
+    it("@noble/hashes", testFor(new A.Noble()));
+
+    it("node-forge", testFor(new A.NodeForge()));
 
     it("create-hash/browser", testFor(new A.CreateHash()));
 });
-
-function wrapAdapter<T extends (A.Adapter | A.AsyncAdapter)>(adapter: T): T {
-    const wrap = Object.create(adapter);
-    wrap.hash = (data: string) => adapter.hash(Buffer.from(data));
-    return wrap;
-}
 
 function testFor(adapter: A.Adapter) {
     return (t: TestContext): void => {

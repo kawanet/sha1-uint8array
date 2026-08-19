@@ -43,10 +43,10 @@ It has a better compatibility with Node.js's `crypto` module in its smaller foot
 |[hash.js](https://www.npmjs.com/package/hash.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|17KB|
 |[jssha](https://npmjs.com/package/jssha)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|10KB|
 |[crypto-js](https://npmjs.com/package/crypto-js)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|109KB|
-|[jshashes](https://npmjs.com/package/jshashes)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|23KB|
 |[sha.js](https://npmjs.com/package/sha.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|26KB|
+|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|🚫 NO|✅ OK|🚫 NO|✅ OK|✅ OK|TBD|
+|[node-forge](https://www.npmjs.com/package/node-forge)|✅ OK|🚫 NO|🚫 NO|✅ OK|✅ OK|TBD|
 |[create-hash](https://npmjs.com/package/create-hash)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|95KB|
-|[tiny-sha1](https://npmjs.com/package/tiny-sha1)|🚫 NO|✅ OK|🚫 NO|✅ OK|🚫 NO|2KB|
 |[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|🚫 NO|✅ OK|✅ OK|🚫 NO|🚫 NO|-|
 
 The W3C standard `crypto.subtle.digest()` API has a different interface which
@@ -65,8 +65,9 @@ Node.js's native `crypto` module definitely runs faster than any others on Node.
 |[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|500ms|619ms|882ms|
 |[jssha](https://npmjs.com/package/jssha)|3.2.0|720ms|799ms|747ms|
 |[crypto-js](https://npmjs.com/package/crypto-js)|4.0.0|765ms|842ms|991ms|
-|[jshashes](https://npmjs.com/package/jshashes)|1.0.8|674ms|1,498ms|721ms|
 |[sha.js](https://npmjs.com/package/sha.js)|2.4.11|361ms|964ms|3,487ms|
+|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|TBD|TBD|TBD|TBD|
+|[node-forge](https://www.npmjs.com/package/node-forge)|TBD|TBD|TBD|TBD|
 
 The benchmark above shows milliseconds for 20,000 times of
 SHA-1 `hex` hash digest generation for approx 1KB string as input.
