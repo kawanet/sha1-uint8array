@@ -1,5 +1,6 @@
 ALL := \
 	noble_hashes_legacy.js \
+	noble_hashes_utils.js \
 
 ####
 
@@ -7,6 +8,13 @@ all: $(ALL)
 
 noble_hashes_legacy.js: ../../node_modules/@noble/hashes/legacy.js
 	../../node_modules/.bin/rollup --name noble_hashes_legacy \
+	-p 'node-resolve={browser:true,preferBuiltins:false}' \
+	-p 'commonjs' \
+	--format iife $< -o $@
+	@ls -l $@
+
+noble_hashes_utils.js: ../../node_modules/@noble/hashes/utils.js
+	../../node_modules/.bin/rollup --name noble_hashes_utils \
 	-p 'node-resolve={browser:true,preferBuiltins:false}' \
 	-p 'commonjs' \
 	--format iife $< -o $@

@@ -21,7 +21,7 @@ const rollupConfig: RollupOptions = {
      */
     external: [
         "@noble/hashes/legacy.js",
-        // "@noble/hashes/utils.js"
+        "@noble/hashes/utils.js",
         // "create-hash/browser.js"
         // "crypto-js"
         // "hash.js/lib/hash/sha/1.js"
@@ -35,7 +35,7 @@ const rollupConfig: RollupOptions = {
         format: "iife",
         globals: {
             "@noble/hashes/legacy.js": "noble_hashes_legacy",
-            // "@noble/hashes/utils.js": "noble_hashes_utils",
+            "@noble/hashes/utils.js": "noble_hashes_utils",
             // "create-hash/browser.js": "create_hash_browser",
             // "crypto-js": "crypto_js",
             // "hash.js/lib/hash/sha/1.js": "hash_js_lib_hash_sha_1",
