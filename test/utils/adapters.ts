@@ -2,8 +2,8 @@
  * An interface which has digest() method
  */
 
-import {arrayToHex} from "./utils.ts";
 import {sha1 as noble} from "@noble/hashes/legacy.js";
+import {bytesToHex} from "@noble/hashes/utils.js";
 import createHashBrowser from "create-hash/browser.js";
 import cryptoJs from "crypto-js";
 import hashJs from "hash.js/lib/hash/sha/1.js";
@@ -12,6 +12,7 @@ import forgeSha from "node-forge/lib/sha1.js";
 import * as nodeCrypto from "node:crypto";
 import shaJs from "sha.js/sha1.js";
 import {createHash as ownCreateHash} from "sha1-uint8array";
+import {arrayToHex} from "./utils.ts";
 
 export interface Adapter {
     noString?: boolean;
@@ -146,12 +147,12 @@ export class HashJs implements Adapter {
  */
 
 export class Noble implements Adapter {
-    private hash_ = noble;
+    private sha1 = noble;
     noString = true;
     noDataView = true;
 
     hash(data: Uint8Array): string {
-        return arrayToHex(this.hash_(data));
+        return bytesToHex(this.sha1(data));
     }
 }
 
