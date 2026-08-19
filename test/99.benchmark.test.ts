@@ -32,9 +32,9 @@ describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
         it("hash.js", testFor(new A.HashJs()));
         it("jssha", testFor(new A.JsSHA()));
         it("crypto-js", testFor(new A.CryptoJs()));
-        it("jshashes", testFor(new A.JsHashes()));
-        it("tiny-sha1", testFor(new A.TinySha1()));
         it("sha.js", testFor(new A.ShaJS()));
+        it("@noble/hashes", testFor(new A.Noble()));
+        it("node-forge", testFor(new A.NodeForge()));
     });
 
     describe("input: Uint8Array => output: hex", () => {
@@ -44,9 +44,9 @@ describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
         it("hash.js", testBinary(new A.HashJs()));
         it("jssha", testBinary(new A.JsSHA()));
         it("crypto-js", testBinary(new A.CryptoJs()));
-        it("jshashes", testBinary(new A.JsHashes()));
-        it("tiny-sha1", testBinary(new A.TinySha1()));
         it("sha.js", testBinary(new A.ShaJS()));
+        it("@noble/hashes", testBinary(new A.Noble()));
+        it("node-forge", testBinary(new A.NodeForge()));
         it("crypto.subtle.digest()", testAsync(new A.SubtleCrypto()));
     });
 
