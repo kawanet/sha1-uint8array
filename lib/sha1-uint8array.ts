@@ -2,6 +2,12 @@
  * sha1-uint8array.ts
  */
 
+// Self-reference via the package name so `tsc --noEmit` resolves these
+// types through `package.json` `exports` — the same path an external
+// consumer would take. If the `exports.types` mapping ever breaks,
+// the build fails here.
+import type * as types from "sha1-uint8array"
+
 const K = [
     0x5a827999 | 0,
     0x6ed9eba1 | 0,
@@ -24,12 +30,12 @@ const algorithms: { [algorithm: string]: number } = {
     sha1: 1,
 };
 
-export function createHash(algorithm?: string) {
+export const createHash: typeof types.createHash = (algorithm?: string) => {
     if (algorithm && !algorithms[algorithm] && !algorithms[algorithm.toLowerCase()]) {
         throw new Error("Digest method not supported");
     }
     return new Hash();
-}
+};
 
 class Hash {
     private A = 0x67452301 | 0;
