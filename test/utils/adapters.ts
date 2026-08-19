@@ -2,17 +2,17 @@
  * An interface which has digest() method
  */
 
-import {sha1 as noble} from "@noble/hashes/legacy.js";
-import {bytesToHex} from "@noble/hashes/utils.js";
-import createHashBrowser from "create-hash/browser.js";
-import cryptoJs from "crypto-js";
-import hashJs from "hash.js/lib/hash/sha/1.js";
-import jsSha from "jssha/dist/sha1";
-import forgeSha from "node-forge/lib/sha1.js";
-import * as nodeCrypto from "node:crypto";
-import shaJs from "sha.js/sha1.js";
-import {createHash as ownCreateHash} from "sha1-uint8array";
-import {arrayToHex} from "./utils.ts";
+import {sha1 as noble} from "@noble/hashes/legacy.js"
+import {bytesToHex} from "@noble/hashes/utils.js"
+import createHashBrowser from "create-hash/browser.js"
+import cryptoJs from "crypto-js"
+import hashJs from "hash.js/lib/hash/sha/1.js"
+import jsSha from "jssha/dist/sha1"
+import forgeSha from "node-forge/lib/sha1.js"
+import * as nodeCrypto from "node:crypto"
+import shaJs from "sha.js/sha1.js"
+import {createHash as ownCreateHash} from "sha1-uint8array"
+import {arrayToHex} from "./utils.ts"
 
 export interface Adapter {
     noString?: boolean;
@@ -28,8 +28,8 @@ export interface AsyncAdapter {
     hash(data: Uint8Array<ArrayBuffer>): Promise<string>;
 }
 
-const isBrowser = ("undefined" !== typeof window);
-const hasSubtle = ("undefined" !== typeof crypto) && crypto.subtle && ("function" === typeof crypto.subtle.digest);
+const isBrowser = ("undefined" !== typeof window)
+const hasSubtle = ("undefined" !== typeof crypto) && crypto.subtle && ("function" === typeof crypto.subtle.digest)
 
 /**
  * sha1-uint8array
@@ -39,13 +39,13 @@ export class SHA1Uint8Array implements Adapter {
     private createHash = ownCreateHash;
 
     hash(data: string | Uint8Array | ArrayBufferView): string {
-        const hash = this.createHash();
+        const hash = this.createHash()
         if ("string" === typeof data) {
-            hash.update(data); // same call either way: update() is overloaded, not union-typed
+            hash.update(data) // same call either way: update() is overloaded, not union-typed
         } else {
-            hash.update(data);
+            hash.update(data)
         }
-        return hash.digest("hex");
+        return hash.digest("hex")
     }
 }
 
@@ -61,8 +61,8 @@ export class Crypto implements Adapter {
     hash(data: string | Uint8Array | ArrayBufferView): string {
         // BinaryLike covers the concrete views rather than the abstract
         // ArrayBufferView, so narrow before handing the value over.
-        const input = "string" === typeof data ? data : new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
-        return this.crypto.createHash("sha1").update(input).digest("hex");
+        const input = "string" === typeof data ? data : new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
+        return this.crypto.createHash("sha1").update(input).digest("hex")
     }
 }
 
@@ -81,7 +81,7 @@ export class CreateHash implements Adapter {
     noBinary = isBrowser;
 
     hash(data: string | Uint8Array): string {
-        return this.createHash("sha1").update(data).digest("hex");
+        return this.createHash("sha1").update(data).digest("hex")
     }
 }
 
@@ -94,7 +94,7 @@ export class CryptoJs implements Adapter {
     noBinary = true;
 
     hash(data: string): string {
-        return this.CryptoJS.SHA1(data).toString();
+        return this.CryptoJS.SHA1(data).toString()
     }
 }
 
@@ -107,10 +107,10 @@ export class JsSHA implements Adapter {
     noDataView = true;
 
     hash(data: string): string {
-        const type = ("string" === typeof data) ? "TEXT" : "UINT8ARRAY";
-        const shaObj = new this.jsSHA1("SHA-1", type);
-        shaObj.update(data);
-        return shaObj.getHash("HEX");
+        const type = ("string" === typeof data) ? "TEXT" : "UINT8ARRAY"
+        const shaObj = new this.jsSHA1("SHA-1", type)
+        shaObj.update(data)
+        return shaObj.getHash("HEX")
     }
 }
 
@@ -123,7 +123,7 @@ export class ShaJS implements Adapter {
     noDataView = true;
 
     hash(data: string | Uint8Array): string {
-        return new this.Sha1().update(data).digest("hex");
+        return new this.Sha1().update(data).digest("hex")
     }
 }
 
@@ -136,7 +136,7 @@ export class HashJs implements Adapter {
     noDataView = true;
 
     hash(data: string | Uint8Array): string {
-        return this.hashJs().update(data).digest('hex');
+        return this.hashJs().update(data).digest('hex')
     }
 }
 
@@ -152,7 +152,7 @@ export class Noble implements Adapter {
     noDataView = true;
 
     hash(data: Uint8Array): string {
-        return bytesToHex(this.sha1(data));
+        return bytesToHex(this.sha1(data))
     }
 }
 
@@ -168,10 +168,10 @@ export class NodeForge implements Adapter {
     noBinary = true;
 
     hash(data: string): string {
-        const md = this.md.create();
+        const md = this.md.create()
         // update() reads a string as latin1 unless the encoding is named.
-        md.update(data, "utf8");
-        return md.digest().toHex();
+        md.update(data, "utf8")
+        return md.digest().toHex()
     }
 }
 
@@ -184,7 +184,7 @@ export class SubtleCrypto implements AsyncAdapter {
     noBinary = !hasSubtle;
 
     async hash(data: Uint8Array<ArrayBuffer>): Promise<string> {
-        const digest = await crypto.subtle.digest("SHA-1", data);
-        return arrayToHex(new Uint8Array(digest));
+        const digest = await crypto.subtle.digest("SHA-1", data)
+        return arrayToHex(new Uint8Array(digest))
     }
 }

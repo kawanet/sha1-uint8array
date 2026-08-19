@@ -1,110 +1,110 @@
-import type {TestContext} from "node:test";
-import {describe, it} from "node:test";
+import type {TestContext} from "node:test"
+import {describe, it} from "node:test"
 
-import {strict as assert} from "node:assert";
-import * as A from "./utils/adapters.ts";
-import {arrayToArrayBuffer} from "./utils/utils.ts";
+import {strict as assert} from "node:assert"
+import * as A from "./utils/adapters.ts"
+import {arrayToArrayBuffer} from "./utils/utils.ts"
 
 // Suite label. Kept a literal so the CommonJS build for the browser
 // bundle does not need import.meta.
-const TITLE = "80.compat.test.ts";
+const TITLE = "80.compat.test.ts"
 
 describe(TITLE, () => {
-    it("crypto", testFor(new A.Crypto()));
+    it("crypto", testFor(new A.Crypto()))
 
-    it("sha1-uint8array", testFor(new A.SHA1Uint8Array()));
+    it("sha1-uint8array", testFor(new A.SHA1Uint8Array()))
 
-    it("hash.js", testFor(new A.HashJs()));
+    it("hash.js", testFor(new A.HashJs()))
 
-    it("jssha", testFor(new A.JsSHA()));
+    it("jssha", testFor(new A.JsSHA()))
 
-    it("crypto-js", testFor(new A.CryptoJs()));
+    it("crypto-js", testFor(new A.CryptoJs()))
 
-    it("sha.js", testFor(new A.ShaJS()));
+    it("sha.js", testFor(new A.ShaJS()))
 
-    it("@noble/hashes", testFor(new A.Noble()));
+    it("@noble/hashes", testFor(new A.Noble()))
 
-    it("node-forge", testFor(new A.NodeForge()));
+    it("node-forge", testFor(new A.NodeForge()))
 
-    it("create-hash/browser", testFor(new A.CreateHash()));
-});
+    it("create-hash/browser", testFor(new A.CreateHash()))
+})
 
 function testFor(adapter: A.Adapter) {
     return (t: TestContext): void => {
         // Nothing to check for an adapter that takes neither shape.
-        if (adapter.noString && adapter.noBinary) return t.skip();
+        if (adapter.noString && adapter.noBinary) return t.skip()
 
         if (!adapter.noString) {
             {
-                const input = ""; // 0 byte
-                assert.equal(adapter.hash(input), "da39a3ee5e6b4b0d3255bfef95601890afd80709", "empty");
+                const input = "" // 0 byte
+                assert.equal(adapter.hash(input), "da39a3ee5e6b4b0d3255bfef95601890afd80709", "empty")
             }
 
             {
-                const input = "A"; // 1 byte
-                assert.equal(adapter.hash(input), "6dcd4ce23d88e2ee9568ba546c007c63d9131c1b", "1 byte");
+                const input = "A" // 1 byte
+                assert.equal(adapter.hash(input), "6dcd4ce23d88e2ee9568ba546c007c63d9131c1b", "1 byte")
             }
 
             {
-                const input = "α"; // 2 bytes
-                assert.equal(adapter.hash(input), "6ebca356400287949b04fa5bf555e1981b80e784", "2 bytes");
+                const input = "α" // 2 bytes
+                assert.equal(adapter.hash(input), "6ebca356400287949b04fa5bf555e1981b80e784", "2 bytes")
             }
 
             {
-                const input = "漢"; // 3 bytes
-                assert.equal(adapter.hash(input), "4f9f9d6e98756181266931323ed898250182a5c5", "3 bytes");
+                const input = "漢" // 3 bytes
+                assert.equal(adapter.hash(input), "4f9f9d6e98756181266931323ed898250182a5c5", "3 bytes")
             }
 
             {
-                const input = "\u{1F60D}"; // 4 bytes
-                assert.equal(adapter.hash(input), "a4019edcc896b89693ee04673c47510425be3c9f", "4 bytes");
+                const input = "\u{1F60D}" // 4 bytes
+                assert.equal(adapter.hash(input), "a4019edcc896b89693ee04673c47510425be3c9f", "4 bytes")
             }
 
             {
-                const input = "1234567890123456789012345678901234567890123456789012345678901234"; // 64 byte
-                assert.equal(adapter.hash(input), "c71490fc24aa3d19e11282da77032dd9cdb33103", "64 byte");
+                const input = "1234567890123456789012345678901234567890123456789012345678901234" // 64 byte
+                assert.equal(adapter.hash(input), "c71490fc24aa3d19e11282da77032dd9cdb33103", "64 byte")
             }
 
             {
-                const input = "Oh, wet Alex, a jar, a fag! Up, disk, curve by! Man Oz, Iraq, Arizona, my Bev? Ruck's id-pug, a far Ajax, elate? Who?"; // 117 bytes
-                assert.equal(adapter.hash(input), "8a6b5061c2724db215c1f23de00272f39bfa2cb5", shorten(input));
+                const input = "Oh, wet Alex, a jar, a fag! Up, disk, curve by! Man Oz, Iraq, Arizona, my Bev? Ruck's id-pug, a far Ajax, elate? Who?" // 117 bytes
+                assert.equal(adapter.hash(input), "8a6b5061c2724db215c1f23de00272f39bfa2cb5", shorten(input))
             }
 
             {
-                const input = "Le cœur déçu mais l'âme plutôt naïve, Louÿs rêva de crapaüter en canoë au delà des îles, près du mälströn où brûlent les novæ."; // 144 bytes
-                assert.equal(adapter.hash(input), "4142d9c0caf72a8002e0da869dc26703269533be", shorten(input));
+                const input = "Le cœur déçu mais l'âme plutôt naïve, Louÿs rêva de crapaüter en canoë au delà des îles, près du mälströn où brûlent les novæ." // 144 bytes
+                assert.equal(adapter.hash(input), "4142d9c0caf72a8002e0da869dc26703269533be", shorten(input))
             }
 
             {
-                const input = "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich."; // 67 bytes
-                assert.equal(adapter.hash(input), "44a10786489a48d229b238b3290d3d750bc9b3a8", shorten(input));
+                const input = "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich." // 67 bytes
+                assert.equal(adapter.hash(input), "44a10786489a48d229b238b3290d3d750bc9b3a8", shorten(input))
             }
 
             {
-                const input = "El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja."; // 119 bytes
-                assert.equal(adapter.hash(input), "475ae9798e1129a81c644ec3702cbbd98a24a455", shorten(input));
+                const input = "El veloz murciélago hindú comía feliz cardillo y kiwi. La cigüeña tocaba el saxofón detrás del palenque de paja." // 119 bytes
+                assert.equal(adapter.hash(input), "475ae9798e1129a81c644ec3702cbbd98a24a455", shorten(input))
             }
 
         }
 
         if (!adapter.noBinary) {
-            const buffer = arrayToArrayBuffer([0, 1, 126, 127, 128, 129, 254, 255]);
-            const expected = "70d948814a441fc26094ad091ea3f5bd3e611b4d";
+            const buffer = arrayToArrayBuffer([0, 1, 126, 127, 128, 129, 254, 255])
+            const expected = "70d948814a441fc26094ad091ea3f5bd3e611b4d"
 
-            assert.equal(adapter.hash(new Uint8Array(buffer)), expected);
+            assert.equal(adapter.hash(new Uint8Array(buffer)), expected)
 
             if (!adapter.noDataView) {
-                assert.equal(adapter.hash(new Int8Array(buffer)), expected);
-                assert.equal(adapter.hash(new Int16Array(buffer)), expected);
-                assert.equal(adapter.hash(new Int32Array(buffer)), expected);
-                assert.equal(adapter.hash(new Uint16Array(buffer)), expected);
-                assert.equal(adapter.hash(new Uint32Array(buffer)), expected);
-                assert.equal(adapter.hash(new DataView(buffer)), expected);
+                assert.equal(adapter.hash(new Int8Array(buffer)), expected)
+                assert.equal(adapter.hash(new Int16Array(buffer)), expected)
+                assert.equal(adapter.hash(new Int32Array(buffer)), expected)
+                assert.equal(adapter.hash(new Uint16Array(buffer)), expected)
+                assert.equal(adapter.hash(new Uint32Array(buffer)), expected)
+                assert.equal(adapter.hash(new DataView(buffer)), expected)
             }
         }
-    };
+    }
 }
 
 function shorten(str: string) {
-    return str.split(" ").slice(0, 4).join(" ");
+    return str.split(" ").slice(0, 4).join(" ")
 }
