@@ -2,7 +2,16 @@
  * An interface which has digest() method
  */
 
-import {arrayToHex} from "./utils";
+import createHashBrowser from "create-hash/browser.js";
+import cryptoJs from "crypto-js";
+import hashJs from "hash.js/lib/hash/sha/1.js";
+import jsHashes from "jshashes";
+import jsSha from "jssha/dist/sha1";
+import * as nodeCrypto from "node:crypto";
+import shaJs from "sha.js/sha1.js";
+import {createHash as ownCreateHash} from "sha1-uint8array";
+import tinySha1 from "tiny-sha1";
+import {arrayToHex} from "./utils.ts";
 
 export interface Adapter {
     noString?: boolean;
@@ -26,10 +35,16 @@ const hasSubtle = ("undefined" !== typeof crypto) && crypto.subtle && ("function
  */
 
 export class SHA1Uint8Array implements Adapter {
-    private createHash = require("../../").createHash;
+    private createHash = ownCreateHash;
 
     hash(data: string | Uint8Array | ArrayBufferView): string {
-        return this.createHash().update(data).digest("hex");
+        const hash = this.createHash();
+        if ("string" === typeof data) {
+            hash.update(data); // same call either way: update() is overloaded, not union-typed
+        } else {
+            hash.update(data);
+        }
+        return hash.digest("hex");
     }
 }
 
@@ -38,12 +53,15 @@ export class SHA1Uint8Array implements Adapter {
  */
 
 export class Crypto implements Adapter {
-    private crypto = require("crypto");
+    private crypto = nodeCrypto;
     noString = isBrowser;
     noBinary = isBrowser;
 
     hash(data: string | Uint8Array | ArrayBufferView): string {
-        return this.crypto.createHash("sha1").update(data).digest("hex");
+        // BinaryLike covers the concrete views rather than the abstract
+        // ArrayBufferView, so narrow before handing the value over.
+        const input = "string" === typeof data ? data : new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+        return this.crypto.createHash("sha1").update(input).digest("hex");
     }
 }
 
@@ -54,7 +72,7 @@ export class Crypto implements Adapter {
  */
 
 export class CreateHash implements Adapter {
-    private createHash = require("create-hash/browser");
+    private createHash = createHashBrowser;
     noDataView = true;
 
     hash(data: string | Uint8Array): string {
@@ -67,7 +85,7 @@ export class CreateHash implements Adapter {
  */
 
 export class CryptoJs implements Adapter {
-    private CryptoJS = require("crypto-js");
+    private CryptoJS = cryptoJs;
     noBinary = true;
 
     hash(data: string): string {
@@ -80,7 +98,7 @@ export class CryptoJs implements Adapter {
  */
 
 export class JsHashes implements Adapter {
-    private Hashes = require("jshashes");
+    private Hashes = jsHashes;
     noBinary = true;
 
     hash(data: string): string {
@@ -93,7 +111,7 @@ export class JsHashes implements Adapter {
  */
 
 export class JsSHA implements Adapter {
-    private jsSHA1 = require("jssha/dist/sha1");
+    private jsSHA1 = jsSha;
     noDataView = true;
 
     hash(data: string): string {
@@ -109,7 +127,7 @@ export class JsSHA implements Adapter {
  */
 
 export class ShaJS implements Adapter {
-    private Sha1 = require("sha.js/sha1");
+    private Sha1 = shaJs;
     noDataView = true;
 
     hash(data: string | Uint8Array): string {
@@ -124,7 +142,7 @@ export class ShaJS implements Adapter {
  */
 
 export class TinySha1 implements Adapter {
-    private TinySha1 = require("tiny-sha1");
+    private TinySha1 = tinySha1;
     noString = true;
     noDataView = true;
 
@@ -138,7 +156,7 @@ export class TinySha1 implements Adapter {
  */
 
 export class HashJs implements Adapter {
-    private hashJs = require("hash.js/lib/hash/sha/1");
+    private hashJs = hashJs;
     noDataView = true;
 
     hash(data: string | Uint8Array): string {
