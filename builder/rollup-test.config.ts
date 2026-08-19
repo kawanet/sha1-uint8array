@@ -22,7 +22,6 @@ const rollupConfig: RollupOptions = {
     external: [
         "@noble/hashes/legacy.js",
         "@noble/hashes/utils.js",
-        // "create-hash/browser.js"
         "crypto-js",
         "hash.js/lib/hash/sha/1.js",
         "jssha/dist/sha1",
@@ -36,7 +35,6 @@ const rollupConfig: RollupOptions = {
         globals: {
             "@noble/hashes/legacy.js": "noble_hashes_legacy",
             "@noble/hashes/utils.js": "noble_hashes_utils",
-            // "create-hash/browser.js": "create_hash_browser",
             "crypto-js": "crypto_js",
             "hash.js/lib/hash/sha/1.js": "hash_js_lib_hash_sha_1",
             "jssha/dist/sha1": "jssha_dist_sha1",
@@ -57,7 +55,6 @@ const rollupConfig: RollupOptions = {
                 {find: "node:test", replacement: here("./node-test.shim.ts")},
                 {find: "node:assert", replacement: here("./node-assert.shim.ts")},
                 {find: "node:crypto", replacement: here("./node-crypto.shim.ts")},
-                {find: "create-hash/browser.js", replacement: here("./create-hash.shim.ts")},
                 {find: "sha1-uint8array", replacement: here("../browser/import.js")},
             ],
         }),

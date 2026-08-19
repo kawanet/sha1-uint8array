@@ -25,8 +25,6 @@ describe(TITLE, () => {
     it("@noble/hashes", testFor(new A.Noble()))
 
     it("node-forge", testFor(new A.NodeForge()))
-
-    it("create-hash/browser", testFor(new A.CreateHash()))
 })
 
 function testFor(adapter: A.Adapter) {
