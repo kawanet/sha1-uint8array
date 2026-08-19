@@ -1,10 +1,18 @@
 ALL := \
+	crypto_js.js \
 	noble_hashes_legacy.js \
 	noble_hashes_utils.js \
 
 ####
 
 all: $(ALL)
+
+crypto_js.js: ../../node_modules/crypto-js/index.js
+	../../node_modules/.bin/rollup --name crypto_js \
+	-p 'node-resolve={browser:true,preferBuiltins:false}' \
+	-p 'commonjs' \
+	--format iife $< -o $@
+	@ls -l $@
 
 noble_hashes_legacy.js: ../../node_modules/@noble/hashes/legacy.js
 	../../node_modules/.bin/rollup --name noble_hashes_legacy \
