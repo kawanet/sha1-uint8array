@@ -5,9 +5,9 @@
 // them as untyped modules keeps the comparison honest without inventing
 // signatures for libraries this package does not own.
 
-declare module "create-hash/browser.js";
-declare module "crypto-js";
-declare module "hash.js/lib/hash/sha/1.js";
-declare module "jssha/dist/sha1";
-declare module "node-forge/lib/sha1.js";
-declare module "sha.js/sha1.js";
+declare module "create-hash/browser.js"
+declare module "crypto-js"
+declare module "hash.js/lib/hash/sha/1.js"
+declare module "jssha/dist/sha1"
+declare module "node-forge/lib/sha1.js"
+declare module "sha.js/sha1.js"
