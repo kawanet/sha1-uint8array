@@ -4,6 +4,7 @@ ALL := \
 	jssha_dist_sha1.js \
 	noble_hashes_legacy.js \
 	noble_hashes_utils.js \
+	node_forge_lib_sha1.js \
 
 ####
 
@@ -39,6 +40,13 @@ noble_hashes_legacy.js: ../../node_modules/@noble/hashes/legacy.js
 
 noble_hashes_utils.js: ../../node_modules/@noble/hashes/utils.js
 	../../node_modules/.bin/rollup --name noble_hashes_utils \
+	-p 'node-resolve={browser:true,preferBuiltins:false}' \
+	-p 'commonjs' \
+	--format iife $< -o $@
+	@ls -l $@
+
+node_forge_lib_sha1.js: ../../node_modules/node-forge/lib/sha1.js
+	../../node_modules/.bin/rollup --name node_forge_lib_sha1 \
 	-p 'node-resolve={browser:true,preferBuiltins:false}' \
 	-p 'commonjs' \
 	--format iife $< -o $@

@@ -26,7 +26,7 @@ const rollupConfig: RollupOptions = {
         "crypto-js",
         "hash.js/lib/hash/sha/1.js",
         "jssha/dist/sha1",
-        // "node-forge/lib/sha1.js"
+        "node-forge/lib/sha1.js",
         // "sha.js/sha1.js"
     ],
 
@@ -40,7 +40,7 @@ const rollupConfig: RollupOptions = {
             "crypto-js": "crypto_js",
             "hash.js/lib/hash/sha/1.js": "hash_js_lib_hash_sha_1",
             "jssha/dist/sha1": "jssha_dist_sha1",
-            // "node-forge/lib/sha1.js": "node_forge_lib_sha1",
+            "node-forge/lib/sha1.js": "node_forge_lib_sha1",
             // "sha.js/sha1.js": "sha_js_sha1",
         },
     },
