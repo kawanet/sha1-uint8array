@@ -2,7 +2,7 @@
 
 [![Node.js CI](https://github.com/kawanet/sha1-uint8array/workflows/Node.js%20CI/badge.svg?branch=main)](https://github.com/kawanet/sha1-uint8array/actions/)
 [![npm version](https://img.shields.io/npm/v/sha1-uint8array)](https://www.npmjs.com/package/sha1-uint8array)
-[![minified size](https://img.shields.io/bundlephobia/min/sha1-uint8array)](https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js)
+[![gzip size](https://img.badgesize.io/https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js?compression=gzip)](https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js)
 
 Fast SHA-1 digest hash based on Uint8Array, pure JavaScript.
 
@@ -40,14 +40,16 @@ It has a better compatibility with Node.js's `crypto` module in its smaller foot
 |---|---|---|---|---|---|---|
 |[crypto](https://nodejs.org/api/crypto.html)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|-|
 |[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|3KB|
-|[hash.js](https://www.npmjs.com/package/hash.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|17KB|
-|[jssha](https://npmjs.com/package/jssha)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|10KB|
-|[crypto-js](https://npmjs.com/package/crypto-js)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|109KB|
-|[sha.js](https://npmjs.com/package/sha.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|26KB|
-|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|🚫 NO|✅ OK|🚫 NO|✅ OK|✅ OK|TBD|
-|[node-forge](https://www.npmjs.com/package/node-forge)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|TBD|
-|[create-hash](https://npmjs.com/package/create-hash)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|95KB|
+|[hash.js](https://www.npmjs.com/package/hash.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|6KB|
+|[jssha](https://npmjs.com/package/jssha)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|9KB|
+|[crypto-js](https://npmjs.com/package/crypto-js)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|66KB|
+|[sha.js](https://npmjs.com/package/sha.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|46KB|
+|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|🚫 NO|✅ OK|🚫 NO|✅ OK|✅ OK|7KB|
+|[node-forge](https://www.npmjs.com/package/node-forge)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|27KB|
 |[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|🚫 NO|✅ OK|✅ OK|🚫 NO|🚫 NO|-|
+
+The minified sizes are measured by `make -C browser/vendor`, which bundles
+each library for browsers and runs it through terser.
 
 The W3C standard `crypto.subtle.digest()` API has a different interface which
 [returns](https://github.com/microsoft/TypeScript/blob/master/lib/lib.dom.d.ts)
@@ -58,20 +60,25 @@ The W3C standard `crypto.subtle.digest()` API has a different interface which
 It runs well both on Node.js and browsers.
 Node.js's native `crypto` module definitely runs faster than any others on Node.js, though.
 
-|module|version|node.js V14|Chrome 87|Safari 14|
-|---|---|---|---|---|
-|[crypto](https://nodejs.org/api/crypto.html)|-|69ms 👍|N/A|N/A|
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.10.0|251ms|352ms 👍|202ms 👍|
-|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|500ms|619ms|882ms|
-|[jssha](https://npmjs.com/package/jssha)|3.2.0|720ms|799ms|747ms|
-|[crypto-js](https://npmjs.com/package/crypto-js)|4.0.0|765ms|842ms|991ms|
-|[sha.js](https://npmjs.com/package/sha.js)|2.4.11|361ms|964ms|3,487ms|
-|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|TBD|TBD|TBD|TBD|
-|[node-forge](https://www.npmjs.com/package/node-forge)|TBD|TBD|TBD|TBD|
+|module|version|node.js V24 string|node.js V24 U8A|Chromium 151 string|Chromium 151 U8A|
+|---|---|---|---|---|---|
+|[crypto](https://nodejs.org/api/crypto.html)|-|31ms 🥇|20ms 🥇|N/A|N/A|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.11.0|140ms 🥈|98ms 🥈|284ms 🥇|161ms|
+|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|483ms|480ms|459ms 🥈|568ms|
+|[jssha](https://npmjs.com/package/jssha)|3.3.2|549ms|279ms|485ms|266ms|
+|[crypto-js](https://npmjs.com/package/crypto-js)|4.2.0|627ms|N/A|731ms|N/A|
+|[sha.js](https://npmjs.com/package/sha.js)|2.4.12|347ms|362ms|532ms|205ms|
+|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|2.3.0|N/A|103ms|N/A|157ms 🥈|
+|[node-forge](https://www.npmjs.com/package/node-forge)|1.4.0|497ms|N/A|598ms|N/A|
+|[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|-|N/A|1,525ms|N/A|51ms 🥇|
 
-The benchmark above shows milliseconds for 20,000 times of
-SHA-1 `hex` hash digest generation for approx 1KB string as input.
-It is tested on macOS 10.15.7 Intel Core i7 3.2GHz.
+The benchmark above shows milliseconds for 20,000 SHA-1 `hex` digests per
+cell, each the median of five runs. `REPEAT=10000` hashes two samples per
+round, a 1.9KB JSON string and a 0.9KB UTF-8 text. `N/A` marks an input shape
+the library does not accept, and `-` a library that hands the digest to Node's
+native `crypto` there instead of running its own JavaScript.
+It is tested on Linux aarch64, Node.js v24.19.0 and Chromium 151.
+
 You could run the benchmark as below.
 
 ```sh
