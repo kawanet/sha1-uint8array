@@ -35,7 +35,7 @@ const rollupConfig: RollupOptions = {
         globals: {
             "@noble/hashes/legacy.js": "noble_hashes_legacy",
             "@noble/hashes/utils.js": "noble_hashes_utils",
-            "crypto-js": "crypto_js",
+            "crypto-js": "crypto_js_index",
             "hash.js/lib/hash/sha/1.js": "hash_js_lib_hash_sha_1",
             "jssha/dist/sha1": "jssha_dist_sha1",
             "node-forge/lib/sha1.js": "node_forge_lib_sha1",
