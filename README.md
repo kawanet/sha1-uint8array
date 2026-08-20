@@ -2,7 +2,7 @@
 
 [![Node.js CI](https://github.com/kawanet/sha1-uint8array/workflows/Node.js%20CI/badge.svg?branch=main)](https://github.com/kawanet/sha1-uint8array/actions/)
 [![npm version](https://img.shields.io/npm/v/sha1-uint8array)](https://www.npmjs.com/package/sha1-uint8array)
-[![minified size](https://img.shields.io/bundlephobia/min/sha1-uint8array)](https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js)
+[![gzip size](https://img.badgesize.io/https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js?compression=gzip)](https://cdn.jsdelivr.net/npm/sha1-uint8array/dist/sha1-uint8array.min.js)
 
 Fast SHA-1 digest hash based on Uint8Array, pure JavaScript.
 
@@ -133,7 +133,7 @@ via `browser` property of `package.json` of your app if you needs
 }
 ```
 
-It costs only less than 3KB, whereas `browserify`'s default `crypto` polyfill
+It costs only about 3KB, whereas `browserify`'s default `crypto` polyfill
 costs more than 300KB huge even after minified.
 
 ```js
