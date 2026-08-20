@@ -63,12 +63,12 @@ Node.js's native `crypto` module definitely runs faster than any others on Node.
 |module|version|node.js V24 string|node.js V24 U8A|Chromium 151 string|Chromium 151 U8A|
 |---|---|---|---|---|---|
 |[crypto](https://nodejs.org/api/crypto.html)|-|31ms 🥇|20ms 🥇|N/A|N/A|
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.11.0|158ms 🥈|111ms|288ms 🥇|166ms|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.11.0|140ms 🥈|98ms 🥈|284ms 🥇|161ms|
 |[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|483ms|480ms|459ms 🥈|568ms|
 |[jssha](https://npmjs.com/package/jssha)|3.3.2|549ms|279ms|485ms|266ms|
 |[crypto-js](https://npmjs.com/package/crypto-js)|4.2.0|627ms|N/A|731ms|N/A|
 |[sha.js](https://npmjs.com/package/sha.js)|2.4.12|347ms|362ms|532ms|205ms|
-|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|2.3.0|N/A|103ms 🥈|N/A|157ms 🥈|
+|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|2.3.0|N/A|103ms|N/A|157ms 🥈|
 |[node-forge](https://www.npmjs.com/package/node-forge)|1.4.0|497ms|N/A|598ms|N/A|
 |[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|-|N/A|1,525ms|N/A|51ms 🥇|
 
@@ -133,7 +133,7 @@ via `browser` property of `package.json` of your app if you needs
 }
 ```
 
-It costs only about 3KB, whereas `browserify`'s default `crypto` polyfill
+It costs only less than 3KB, whereas `browserify`'s default `crypto` polyfill
 costs more than 300KB huge even after minified.
 
 ```js
