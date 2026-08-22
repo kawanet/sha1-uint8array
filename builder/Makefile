@@ -124,7 +124,7 @@ $(BUILDER_BENCH_DST): $(BENCH_CONFIG) $(SRC) $(BUILDER_SRC) $(TEST_SRC) $(BROWSE
 	@mkdir -p ../builder/tests ../browser/tests
 	$(MAKE) -C ../browser/vendor
 	../node_modules/.bin/rollup -c $(BENCH_CONFIG)
-	@ls -l $@ $(BROWSER_BENCH_DST)
+	@ls -l $@
 	@test "$$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
 	@echo ""
 
@@ -132,7 +132,8 @@ $(BUILDER_BENCH_DST): $(BENCH_CONFIG) $(SRC) $(BUILDER_SRC) $(TEST_SRC) $(BROWSE
 # command here: ls fails loudly if it is missing (recover: make clean).
 $(BROWSER_BENCH_DST): $(BUILDER_BENCH_DST)
 	@ls -l $@
-	@test "$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
+	@test "$$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
+	@echo ""
 
 ####
 
