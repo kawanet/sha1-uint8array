@@ -179,15 +179,11 @@ class Hash {
         let i = 0
         offset = offset!! | 0
 
-        while (i < N_inputWords) {
-            W[i++] = swap32(data[offset++])
-        }
-
         for (i = 0; i < N_workWords; i++) {
             const S = (i / 20) | 0
             let w: number
             if (i < N_inputWords) {
-                w = W[i]
+                w = W[i] = swap32(data[offset++])
             } else {
                 // Every expansion word refers only to the preceding 16 words.
                 const j = i & (N_inputWords - 1)
