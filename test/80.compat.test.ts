@@ -25,6 +25,14 @@ describe(TITLE, () => {
     it("@noble/hashes", testFor(new A.Noble()))
 
     it("node-forge", testFor(new A.NodeForge()))
+
+    // The async W3C interface sits outside the sync testFor() shape.
+    it("crypto.subtle.digest()", async (t: TestContext) => {
+        const adapter = new A.SubtleCrypto()
+        if (adapter.noAsync) return t.skip()
+        assert.equal(await adapter.hashAsync(new Uint8Array(0)), "da39a3ee5e6b4b0d3255bfef95601890afd80709", "empty")
+        assert.equal(await adapter.hashAsync(new Uint8Array([0x41])), "6dcd4ce23d88e2ee9568ba546c007c63d9131c1b", "1 byte")
+    })
 })
 
 function testFor(adapter: A.Adapter) {
