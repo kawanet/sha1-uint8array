@@ -10,7 +10,7 @@ import jsSha from "jssha/dist/sha1"
 import forgeSha from "node-forge/lib/sha1.js"
 import * as nodeCrypto from "node:crypto"
 import shaJs from "sha.js/sha1.js"
-import {createHash as ownCreateHash} from "sha1-uint8array"
+import {createHash as ownCreateHash} from "../../lib/sha1-uint8array.ts"
 import {arrayToHex} from "./utils.ts"
 
 export interface Adapter {
