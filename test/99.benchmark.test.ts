@@ -1,7 +1,6 @@
 import type {TestContext} from "node:test"
-import {before, describe, it} from "node:test"
+import {describe, it} from "node:test"
 
-import {strict as assert} from "node:assert"
 import * as A from "./utils/adapters.ts"
 import {MAKURANOSOSHI, SAMPLE_JSON} from "./utils/sample-text.ts"
 
@@ -9,36 +8,40 @@ import {MAKURANOSOSHI, SAMPLE_JSON} from "./utils/sample-text.ts"
 // bundle does not need import.meta.
 const TITLE = "99.benchmark.test.ts"
 
-const isBrowser = ("undefined" !== typeof window)
-const isLegacy = ("function" !== typeof TextEncoder)
-const REPEAT = +(process.env.REPEAT || (isBrowser ? (isLegacy ? 1000 : 10000) : 10000))
-const SLEEP = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+// This suite verifies the benchmark payloads themselves: the closures
+// builder/bench.cli.ts measures run here with a small REPEAT, so CI keeps
+// covering the measured code path. The numbers live in the runner;
+// this file asserts correctness only.
+const REPEAT = +(process.env.REPEAT || 100)
 const stringToArray = (str: string) => Array.from(unescape(encodeURIComponent(str)), (c: string) => c.charCodeAt(0))
 
 describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
 
-    const sampleJSON = SAMPLE_JSON
-    const binaryJSON = new Uint8Array(stringToArray(sampleJSON))
-    const expectJSON = (new A.Crypto()).hash(sampleJSON)
+    const expectJSON = (new A.Crypto()).hash(SAMPLE_JSON)
+    const expectUTF8 = (new A.Crypto()).hash(MAKURANOSOSHI)
 
-    const sampleUTF8 = MAKURANOSOSHI
-    const binaryUTF8 = new Uint8Array(stringToArray(sampleUTF8))
-    const expectUTF8 = (new A.Crypto()).hash(sampleUTF8)
+    const stringPairs: A.BenchPair<string>[] = [
+        {data: SAMPLE_JSON, expect: expectJSON},
+        {data: MAKURANOSOSHI, expect: expectUTF8},
+    ]
 
-    describe("input: string => output: hex", () => {
-        before(() => SLEEP(100))
-        it("crypto", testFor(new A.Crypto()))
-        it("sha1-uint8array", testFor(new A.SHA1Uint8Array()))
-        it("hash.js", testFor(new A.HashJs()))
-        it("jssha", testFor(new A.JsSHA()))
-        it("crypto-js", testFor(new A.CryptoJs()))
-        it("sha.js", testFor(new A.ShaJS()))
-        it("@noble/hashes", testFor(new A.Noble()))
-        it("node-forge", testFor(new A.NodeForge()))
+    const binaryPairs: A.BenchPair<Uint8Array<ArrayBuffer>>[] = [
+        {data: new Uint8Array(stringToArray(SAMPLE_JSON)), expect: expectJSON},
+        {data: new Uint8Array(stringToArray(MAKURANOSOSHI)), expect: expectUTF8},
+    ]
+
+    describe("makeStringBench", () => {
+        it("crypto", testString(new A.Crypto()))
+        it("sha1-uint8array", testString(new A.SHA1Uint8Array()))
+        it("hash.js", testString(new A.HashJs()))
+        it("jssha", testString(new A.JsSHA()))
+        it("crypto-js", testString(new A.CryptoJs()))
+        it("sha.js", testString(new A.ShaJS()))
+        it("@noble/hashes", testString(new A.Noble()))
+        it("node-forge", testString(new A.NodeForge()))
     })
 
-    describe("input: Uint8Array => output: hex", () => {
-        before(() => SLEEP(100))
+    describe("makeBinaryBench", () => {
         it("crypto", testBinary(new A.Crypto()))
         it("sha1-uint8array", testBinary(new A.SHA1Uint8Array()))
         it("hash.js", testBinary(new A.HashJs()))
@@ -47,39 +50,33 @@ describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
         it("sha.js", testBinary(new A.ShaJS()))
         it("@noble/hashes", testBinary(new A.Noble()))
         it("node-forge", testBinary(new A.NodeForge()))
+    })
+
+    describe("makeBinaryBenchAsync", () => {
         it("crypto.subtle.digest()", testAsync(new A.SubtleCrypto()))
     })
 
-    function testFor(adapter: A.Adapter) {
+    function testString(adapter: A.Adapter) {
         return (t: TestContext): void => {
-            if (adapter.noString) return t.skip()
-
-            for (let i = 0; i < REPEAT; i++) {
-                assert.equal(adapter.hash(sampleJSON), expectJSON)
-                assert.equal(adapter.hash(sampleUTF8), expectUTF8)
-            }
+            const bench = adapter.makeStringBench(stringPairs)
+            if (!bench) return t.skip()
+            bench(REPEAT)
         }
     }
 
     function testBinary(adapter: A.Adapter) {
         return (t: TestContext): void => {
-            if (adapter.noBinary) return t.skip()
-
-            for (let i = 0; i < REPEAT; i++) {
-                assert.equal(adapter.hash(binaryJSON), expectJSON)
-                assert.equal(adapter.hash(binaryUTF8), expectUTF8)
-            }
+            const bench = adapter.makeBinaryBench(binaryPairs)
+            if (!bench) return t.skip()
+            bench(REPEAT)
         }
     }
 
-    function testAsync(adapter: A.AsyncAdapter) {
+    function testAsync(adapter: A.Adapter) {
         return async (t: TestContext): Promise<void> => {
-            if (adapter.noBinary) return t.skip()
-
-            for (let i = 0; i < REPEAT; i++) {
-                assert.equal(await adapter.hash(binaryJSON), expectJSON)
-                assert.equal(await adapter.hash(binaryUTF8), expectUTF8)
-            }
+            const bench = adapter.makeBinaryBenchAsync(binaryPairs)
+            if (!bench) return t.skip()
+            await bench(REPEAT)
         }
     }
 })
