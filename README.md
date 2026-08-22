@@ -74,7 +74,7 @@ Node.js's native `crypto` module definitely runs faster than any others on Node.
 
 The benchmark above shows milliseconds for 20,000 SHA-1 `hex` digests per
 cell: `REPEAT=10000` hashes two samples per round, a 1.9KB JSON string and a
-0.9KB UTF-8 text. Each cell is the median of five sets, taken in a single
+0.9KB UTF-8 text. Each cell is the median of ten sets, taken in a single
 run; every measurement is preceded by one untimed repeat, which absorbs
 first-load effects. `N/A` marks an input shape
 the library does not accept, and `-` a library that hands the digest to Node's
@@ -93,10 +93,10 @@ npm run build
 npm run bench
 
 # options via environment variables
-REPEAT=10000 SETS=5 TARGET=sha1-uint8array,crypto-js npm run bench
+REPEAT=10000 SETS=10 TARGET=sha1-uint8array,crypto-js npm run bench
 
 # run the benchmark on a browser, options via the query string
-open browser/bench.html   # ?REPEAT=10000&SETS=5&TARGET=sha1-uint8array
+open browser/bench.html   # ?REPEAT=10000&SETS=10&TARGET=sha1-uint8array
 ```
 
 The runner prints one JSON line per cell — the measured sets, their median
