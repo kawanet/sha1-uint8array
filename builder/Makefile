@@ -123,16 +123,14 @@ $(BUILDER_BENCH_DST): $(BENCH_CONFIG) $(SRC) $(BUILDER_SRC) $(TEST_SRC) $(BROWSE
 	@mkdir -p ../builder/tests ../browser/tests
 	$(MAKE) -C ../browser/vendor
 	../node_modules/.bin/rollup -c $(BENCH_CONFIG)
-	@ls -l $@
+	@ls -l $@ $(BROWSER_BENCH_DST)
 	@test "$$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
+	@test "$$(wc -c < $(BROWSER_BENCH_DST))" -le $(TEST_MAX_BYTES) || { echo "ERROR: $(BROWSER_BENCH_DST) exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
 	@echo ""
 
-# The same rollup run above emits this file too, so no second build
-# command here: ls fails loudly if it is missing (recover: make clean).
+# Emitted by the same rollup run above; just assert it exists.
 $(BROWSER_BENCH_DST): $(BUILDER_BENCH_DST)
-	@ls -l $@
-	@test "$$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
-	@echo ""
+	@ [ -f $@ ]
 
 ####
 
