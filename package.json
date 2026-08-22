@@ -76,6 +76,7 @@
     "url": "git+https://github.com/kawanet/sha1-uint8array.git"
   },
   "scripts": {
+    "bench": "make -C builder bench && node builder/tests/bench.mjs",
     "build": "make -C builder",
     "fixpack": "fixpack",
     "prepack": "make -C builder is-buildable",
