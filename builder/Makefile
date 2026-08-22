@@ -128,11 +128,11 @@ $(BUILDER_BENCH_DST): $(BENCH_CONFIG) $(SRC) $(BUILDER_SRC) $(TEST_SRC) $(BROWSE
 	@test "$$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
 	@echo ""
 
-# Tracks the builder-side file; re-runs rollup only if this side is
-# missing, e.g. deleted by hand.
+# The same rollup run above emits this file too, so no second build
+# command here: ls fails loudly if it is missing (recover: make clean).
 $(BROWSER_BENCH_DST): $(BUILDER_BENCH_DST)
-	@test -f $@ || ../node_modules/.bin/rollup -c $(BENCH_CONFIG)
-	@test "$$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
+	@ls -l $@
+	@test "$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
 
 ####
 
