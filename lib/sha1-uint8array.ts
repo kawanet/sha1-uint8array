@@ -8,12 +8,11 @@
 // the build fails here.
 import type * as types from "sha1-uint8array"
 
-const K = [
-    0x5a827999 | 0,
-    0x6ed9eba1 | 0,
-    0x8f1bbcdc | 0,
-    0xca62c1d6 | 0,
-]
+// Round constants, one per 20-round stage.
+const K0 = 0x5a827999 | 0
+const K1 = 0x6ed9eba1 | 0
+const K2 = 0x8f1bbcdc | 0
+const K3 = 0xca62c1d6 | 0
 
 // Hash block/allocation sizes. Plain consts work as-is under Node's
 // type-strip, and minifiers inline them as literals.
@@ -179,22 +178,54 @@ class Hash {
         let i = 0
         offset = offset!! | 0
 
-        for (i = 0; i < N_workWords; i++) {
-            const S = (i / 20) | 0
-            let w: number
-            if (i < N_inputWords) {
-                w = W[i] = swap32(data[offset++])
-            } else {
-                // Every expansion word refers only to the preceding 16 words.
-                const j = i & (N_inputWords - 1)
-                w = W[j] = rotate1(
-                    W[(i - 3) & (N_inputWords - 1)] ^
-                    W[(i - 8) & (N_inputWords - 1)] ^
-                    W[(i - 14) & (N_inputWords - 1)] ^
-                    W[j],
-                )
-            }
-            const T = (rotate5(A) + ft(S, B, C, D) + E + w + K[S]) | 0
+        // The 80 rounds run as one loop per 20-round stage, so the round
+        // body carries no per-round stage division, function dispatch or
+        // constant lookup. The first stage splits again where loading
+        // input words turns into extending the schedule; the flat W
+        // keeps every extension index direct and in bounds.
+        for (i = 0; i < N_inputWords; i++) {
+            const w = W[i] = swap32(data[offset++])
+            const T = (rotate5(A) + ((B & C) | ((~B) & D)) + E + w + K0) | 0
+            E = D
+            D = C
+            C = rotate30(B)
+            B = A
+            A = T
+        }
+
+        for (i = N_inputWords; i < 20; i++) {
+            const w = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+            const T = (rotate5(A) + ((B & C) | ((~B) & D)) + E + w + K0) | 0
+            E = D
+            D = C
+            C = rotate30(B)
+            B = A
+            A = T
+        }
+
+        for (i = 20; i < 40; i++) {
+            const w = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+            const T = (rotate5(A) + (B ^ C ^ D) + E + w + K1) | 0
+            E = D
+            D = C
+            C = rotate30(B)
+            B = A
+            A = T
+        }
+
+        for (i = 40; i < 60; i++) {
+            const w = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+            const T = (rotate5(A) + ((B & C) | (B & D) | (C & D)) + E + w + K2) | 0
+            E = D
+            D = C
+            C = rotate30(B)
+            B = A
+            A = T
+        }
+
+        for (i = 60; i < N_workWords; i++) {
+            const w = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+            const T = (rotate5(A) + (B ^ C ^ D) + E + w + K3) | 0
             E = D
             D = C
             C = rotate30(B)
@@ -269,7 +300,9 @@ class Hash {
 type NS = (num: number) => string
 type NN = (num: number) => number
 
-const W = new Int32Array(N_inputWords)
+// Full 80-word message schedule. The flat layout costs 256 bytes over
+// a 16-word ring but frees the hot loop from masking every index.
+const W = new Int32Array(N_workWords)
 
 let sharedBuffer: ArrayBuffer
 let sharedOffset: number = 0
@@ -282,11 +315,6 @@ const rotate1: NN = num => (num << 1) | (num >>> 31)
 const rotate5: NN = num => (num << 5) | (num >>> 27)
 const rotate30: NN = num => (num << 30) | (num >>> 2)
 
-function ft(s: number, b: number, c: number, d: number) {
-    if (s === 0) return (b & c) | ((~b) & d)
-    if (s === 2) return (b & c) | (b & d) | (c & d)
-    return b ^ c ^ d
-}
 
 function isBE(): boolean {
     const buf = new Uint8Array(new Uint16Array([0xFEFF]).buffer) // BOM
