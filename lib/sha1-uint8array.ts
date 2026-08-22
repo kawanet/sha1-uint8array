@@ -25,6 +25,8 @@ const N_workWords = 80
 const N_allocBytes = 80
 const N_allocWords = N_allocBytes / 4
 const N_allocTotal = N_allocBytes * 100
+const N_encodeMin = 64
+const N_encodeKeep = 65536
 
 const algorithms: {[algorithm: string]: number} = {
     sha1: 1,
@@ -127,6 +129,15 @@ class Hash {
     }
 
     private _utf8(text: string): this {
+        // Well-formed strings take the native encoder and then reuse the
+        // aligned binary block path, which outruns the scalar loop below.
+        // The scalar loop remains for chunks with pending surrogate state,
+        // for short strings where a TextEncoder call costs more than it
+        // saves, and for runtimes that lack either of the two natives.
+        if (ENCODER && !this._sp && text.length >= N_encodeMin && isWellFormed(text)) {
+            return this.update(encodeUTF8(text))
+        }
+
         const {_byte, _word} = this
         const length = text.length
         let surrogate = this._sp
@@ -273,6 +284,34 @@ const W = new Int32Array(N_inputWords)
 
 let sharedBuffer: ArrayBuffer
 let sharedOffset: number = 0
+
+// String#isWellFormed arrived in ES2024, after this project's compile
+// target, hence the probe. Both natives must exist together: encodeInto
+// writes the same UTF-8 as the scalar loop only for well-formed input.
+interface WellFormable {
+    isWellFormed?: () => boolean;
+}
+
+const ENCODER = ("undefined" !== typeof TextEncoder && !!(String.prototype as unknown as WellFormable).isWellFormed) ? new TextEncoder() : null
+
+const isWellFormed = (text: string): boolean => (text as unknown as WellFormable).isWellFormed!()
+
+// Reused output buffer for the native encoder. It grows to the largest
+// chunk seen, but a giant one-off string does not stay resident.
+let encodeBuffer: Uint8Array | null = null
+
+const encodeUTF8 = (text: string): Uint8Array => {
+    // Worst case is 3 bytes per UTF-16 code unit: every BMP code point
+    // fits in 3 bytes, and astral pairs emit 4 bytes for 2 units.
+    const max = text.length * 3
+    let buffer = (encodeBuffer && encodeBuffer.length >= max) ? encodeBuffer : null
+    if (!buffer) {
+        buffer = new Uint8Array(max)
+        if (max <= N_encodeKeep) encodeBuffer = buffer
+    }
+    const written = ENCODER!.encodeInto(text, buffer).written
+    return buffer.subarray(0, written)
+}
 
 // Two hex digits per byte value, built once at load. Concatenating four
 // prebuilt pairs avoids Number#toString(16), which runs on the slower
