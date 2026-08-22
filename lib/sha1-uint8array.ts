@@ -195,7 +195,7 @@ class Hash {
                     W[(i - 3) & (N_inputWords - 1)] ^
                     W[(i - 8) & (N_inputWords - 1)] ^
                     W[(i - 14) & (N_inputWords - 1)] ^
-                    W[j]
+                    W[j],
                 )
             }
             const T = (rotate5(A) + ft(S, B, C, D) + E + w + K[S]) | 0
