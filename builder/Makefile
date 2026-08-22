@@ -115,9 +115,8 @@ $(TESTS_DST): $(TESTS_CONFIG) $(SRC) $(BUILDER_SRC) $(TEST_SRC) $(MJS_DST)
 	@test "$$(wc -c < $@)" -le $(TEST_MAX_BYTES) || { echo "ERROR: $@ exceeds $(TEST_MAX_BYTES) byte cap" >&2; exit 1; }
 	@echo ""
 
-# Benchmark runner bundles. One rollup run emits both files, so the
-# recipe lives on the builder-side file alone: grouped targets (&:)
-# would say this directly but need GNU make 4.3, and macOS ships 3.81.
+# Benchmark runner bundles: one rollup run emits both files, and the
+# recipe lives on the builder-side file alone.
 bench: $(BUILDER_BENCH_DST) $(BROWSER_BENCH_DST)
 
 $(BUILDER_BENCH_DST): $(BENCH_CONFIG) $(SRC) $(BUILDER_SRC) $(TEST_SRC) $(BROWSER_SRC) $(MJS_DST) $(MINJS_DST)
