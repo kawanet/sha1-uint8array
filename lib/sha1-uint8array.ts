@@ -183,13 +183,22 @@ class Hash {
             W[i++] = swap32(data[offset++])
         }
 
-        for (i = N_inputWords; i < N_workWords; i++) {
-            W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
-        }
-
         for (i = 0; i < N_workWords; i++) {
             const S = (i / 20) | 0
-            const T = (rotate5(A) + ft(S, B, C, D) + E + W[i] + K[S]) | 0
+            let w: number
+            if (i < N_inputWords) {
+                w = W[i]
+            } else {
+                // Every expansion word refers only to the preceding 16 words.
+                const j = i & (N_inputWords - 1)
+                w = W[j] = rotate1(
+                    W[(i - 3) & (N_inputWords - 1)] ^
+                    W[(i - 8) & (N_inputWords - 1)] ^
+                    W[(i - 14) & (N_inputWords - 1)] ^
+                    W[j],
+                )
+            }
+            const T = (rotate5(A) + ft(S, B, C, D) + E + w + K[S]) | 0
             E = D
             D = C
             C = rotate30(B)
@@ -264,7 +273,7 @@ class Hash {
 type NS = (num: number) => string
 type NN = (num: number) => number
 
-const W = new Int32Array(N_workWords)
+const W = new Int32Array(N_inputWords)
 
 let sharedBuffer: ArrayBuffer
 let sharedOffset: number = 0
