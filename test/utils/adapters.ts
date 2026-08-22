@@ -29,9 +29,15 @@ export abstract class Adapter {
     declare noString?: boolean;
     declare noBinary?: boolean;
     declare noDataView?: boolean;
+    declare noAsync?: boolean;
+    declare noBench?: boolean;
 
     hash(_data: string | Uint8Array | ArrayBufferView): string {
         throw new Error("hash() not supported")
+    }
+
+    hashAsync(_data: Uint8Array<ArrayBuffer>): Promise<string> {
+        throw new Error("hashAsync() not supported")
     }
 
     // Each call builds a fresh closure per adapter, so the hot loop's
@@ -39,7 +45,7 @@ export abstract class Adapter {
     // monomorphic; a loop shared on the prototype would go megamorphic
     // and skew the comparison between adapters.
     makeStringBench(pairs: BenchPair<string>[]): ((n: number) => void) | null {
-        if (this.noString) return null
+        if (this.noBench || this.noString) return null
         return (n) => {
             for (let i = 0; i < n; i++) {
                 for (const p of pairs) assert.equal(this.hash(p.data), p.expect)
@@ -48,7 +54,7 @@ export abstract class Adapter {
     }
 
     makeBinaryBench(pairs: BenchPair<Uint8Array>[]): ((n: number) => void) | null {
-        if (this.noBinary) return null
+        if (this.noBench || this.noBinary) return null
         return (n) => {
             for (let i = 0; i < n; i++) {
                 for (const p of pairs) assert.equal(this.hash(p.data), p.expect)
@@ -56,9 +62,9 @@ export abstract class Adapter {
         }
     }
 
-    // Only the Promise-based adapters override this; the default states
-    // that the adapter has no async interface.
-    makeAsyncBench(_pairs: BenchPair<Uint8Array<ArrayBuffer>>[]): ((n: number) => Promise<void>) | null {
+    // The async implementation of the binary input; only Promise-based
+    // adapters override this. The default states there is none.
+    makeBinaryBenchAsync(_pairs: BenchPair<Uint8Array<ArrayBuffer>>[]): ((n: number) => Promise<void>) | null {
         return null
     }
 }
@@ -207,8 +213,8 @@ export class SubtleCrypto extends Adapter {
         return arrayToHex(new Uint8Array(digest))
     }
 
-    makeAsyncBench(pairs: BenchPair<Uint8Array<ArrayBuffer>>[]): ((n: number) => Promise<void>) | null {
-        if (this.noAsync) return null
+    makeBinaryBenchAsync(pairs: BenchPair<Uint8Array<ArrayBuffer>>[]): ((n: number) => Promise<void>) | null {
+        if (this.noBench || this.noAsync) return null
         return async (n) => {
             for (let i = 0; i < n; i++) {
                 for (const p of pairs) assert.equal(await this.hashAsync(p.data), p.expect)

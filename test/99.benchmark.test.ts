@@ -9,7 +9,7 @@ import {MAKURANOSOSHI, SAMPLE_JSON} from "./utils/sample-text.ts"
 const TITLE = "99.benchmark.test.ts"
 
 // This suite verifies the benchmark payloads themselves: the closures
-// builder/bench.ts measures run here with a small REPEAT, so CI keeps
+// builder/bench.cli.ts measures run here with a small REPEAT, so CI keeps
 // covering the measured code path. The numbers live in the runner;
 // this file asserts correctness only.
 const REPEAT = +(process.env.REPEAT || 100)
@@ -52,7 +52,7 @@ describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
         it("node-forge", testBinary(new A.NodeForge()))
     })
 
-    describe("makeAsyncBench", () => {
+    describe("makeBinaryBenchAsync", () => {
         it("crypto.subtle.digest()", testAsync(new A.SubtleCrypto()))
     })
 
@@ -74,7 +74,7 @@ describe(`REPEAT=${REPEAT} ${TITLE}`, () => {
 
     function testAsync(adapter: A.Adapter) {
         return async (t: TestContext): Promise<void> => {
-            const bench = adapter.makeAsyncBench(binaryPairs)
+            const bench = adapter.makeBinaryBenchAsync(binaryPairs)
             if (!bench) return t.skip()
             await bench(REPEAT)
         }
