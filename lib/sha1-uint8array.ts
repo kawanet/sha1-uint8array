@@ -183,54 +183,71 @@ class Hash {
         // constant lookup. The first stage splits again where loading
         // input words turns into extending the schedule; the flat W
         // keeps every extension index direct and in bounds.
-        for (i = 0; i < N_inputWords; i++) {
-            const w = W[i] = swap32(data[offset++])
-            const T = (rotate5(A) + ((B & C) | ((~B) & D)) + E + w + K0) | 0
-            E = D
-            D = C
-            C = rotate30(B)
-            B = A
-            A = T
+        // Rounds go in pairs: the second reads the first through fresh
+        // bindings, halving the a..e state rotation assignments.
+        for (i = 0; i < N_inputWords; i += 2) {
+            const w0 = W[i] = swap32(data[offset++])
+            const T1 = (rotate5(A) + ((B & C) | ((~B) & D)) + E + w0 + K0) | 0
+            const B30 = rotate30(B)
+            const w1 = W[i + 1] = swap32(data[offset++])
+            const T2 = (rotate5(T1) + ((A & B30) | ((~A) & C)) + D + w1 + K0) | 0
+            E = C
+            D = B30
+            C = rotate30(A)
+            B = T1
+            A = T2
         }
 
-        for (i = N_inputWords; i < 20; i++) {
-            const w = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
-            const T = (rotate5(A) + ((B & C) | ((~B) & D)) + E + w + K0) | 0
-            E = D
-            D = C
-            C = rotate30(B)
-            B = A
-            A = T
+        for (i = N_inputWords; i < 20; i += 2) {
+            const w0 = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+            const T1 = (rotate5(A) + ((B & C) | ((~B) & D)) + E + w0 + K0) | 0
+            const B30 = rotate30(B)
+            const w1 = W[i + 1] = rotate1(W[i - 2] ^ W[i - 7] ^ W[i - 13] ^ W[i - 15])
+            const T2 = (rotate5(T1) + ((A & B30) | ((~A) & C)) + D + w1 + K0) | 0
+            E = C
+            D = B30
+            C = rotate30(A)
+            B = T1
+            A = T2
         }
 
-        for (i = 20; i < 40; i++) {
-            const w = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
-            const T = (rotate5(A) + (B ^ C ^ D) + E + w + K1) | 0
-            E = D
-            D = C
-            C = rotate30(B)
-            B = A
-            A = T
+        for (i = 20; i < 40; i += 2) {
+            const w0 = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+            const T1 = (rotate5(A) + (B ^ C ^ D) + E + w0 + K1) | 0
+            const B30 = rotate30(B)
+            const w1 = W[i + 1] = rotate1(W[i - 2] ^ W[i - 7] ^ W[i - 13] ^ W[i - 15])
+            const T2 = (rotate5(T1) + (A ^ B30 ^ C) + D + w1 + K1) | 0
+            E = C
+            D = B30
+            C = rotate30(A)
+            B = T1
+            A = T2
         }
 
-        for (i = 40; i < 60; i++) {
-            const w = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
-            const T = (rotate5(A) + ((B & C) | (B & D) | (C & D)) + E + w + K2) | 0
-            E = D
-            D = C
-            C = rotate30(B)
-            B = A
-            A = T
+        for (i = 40; i < 60; i += 2) {
+            const w0 = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+            const T1 = (rotate5(A) + ((B & C) | (B & D) | (C & D)) + E + w0 + K2) | 0
+            const B30 = rotate30(B)
+            const w1 = W[i + 1] = rotate1(W[i - 2] ^ W[i - 7] ^ W[i - 13] ^ W[i - 15])
+            const T2 = (rotate5(T1) + ((A & B30) | (A & C) | (B30 & C)) + D + w1 + K2) | 0
+            E = C
+            D = B30
+            C = rotate30(A)
+            B = T1
+            A = T2
         }
 
-        for (i = 60; i < N_workWords; i++) {
-            const w = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
-            const T = (rotate5(A) + (B ^ C ^ D) + E + w + K3) | 0
-            E = D
-            D = C
-            C = rotate30(B)
-            B = A
-            A = T
+        for (i = 60; i < N_workWords; i += 2) {
+            const w0 = W[i] = rotate1(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16])
+            const T1 = (rotate5(A) + (B ^ C ^ D) + E + w0 + K3) | 0
+            const B30 = rotate30(B)
+            const w1 = W[i + 1] = rotate1(W[i - 2] ^ W[i - 7] ^ W[i - 13] ^ W[i - 15])
+            const T2 = (rotate5(T1) + (A ^ B30 ^ C) + D + w1 + K3) | 0
+            E = C
+            D = B30
+            C = rotate30(A)
+            B = T1
+            A = T2
         }
 
         this.A = (A + this.A) | 0
