@@ -1,3 +1,6 @@
+# "buffer" module is required as a devDependency to build sha.js.
+.DELETE_ON_ERROR:
+
 ALL := \
 	lib/@noble/hashes/legacy.js \
 	lib/@noble/hashes/utils.js \
@@ -15,14 +18,14 @@ MINJS_DST := ../../dist/sha1-uint8array.min.js
 # into "_". $* only has a value while a recipe runs, so this must be = not :=.
 NAME = $(subst /,_,$(subst -,_,$(subst .,_,$(subst @,,$*))))
 
-all: $(ALL) sizes
+all: $(ALL)
 
 lib/%.js: ../../node_modules/%.js
 	@mkdir -p $(dir $@)
 	../../node_modules/.bin/rollup --name $(NAME) \
 	-p 'node-resolve={browser:true,preferBuiltins:false}' \
 	-p 'commonjs' \
-	--format iife $< -o $@
+	--failAfterWarnings --format iife $< -o $@
 
 lib/%.min.js: lib/%.js
 	../../node_modules/.bin/terser $< -o $@ -c -m
