@@ -39,7 +39,7 @@ It has a better compatibility with Node.js's `crypto` module in its smaller foot
 |module|string IN|Uint8Array IN|TypedArray IN|hex OUT|Uint8Array OUT|minified|
 |---|---|---|---|---|---|---|
 |[crypto](https://nodejs.org/api/crypto.html)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|-|
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|3KB|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|4KB|
 |[hash.js](https://www.npmjs.com/package/hash.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|6KB|
 |[jssha](https://npmjs.com/package/jssha)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|9KB|
 |[crypto-js](https://npmjs.com/package/crypto-js)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|66KB|
@@ -48,8 +48,8 @@ It has a better compatibility with Node.js's `crypto` module in its smaller foot
 |[node-forge](https://www.npmjs.com/package/node-forge)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|27KB|
 |[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|🚫 NO|✅ OK|✅ OK|🚫 NO|🚫 NO|-|
 
-The minified sizes are measured by `make -C browser/vendor`, which bundles
-each library for browsers and runs it through terser.
+The minified sizes are measured by `make -C browser/vendor sizes`, which bundles
+each library for browsers.
 
 The W3C standard `crypto.subtle.digest()` API has a different interface which
 [returns](https://github.com/microsoft/TypeScript/blob/master/lib/lib.dom.d.ts)
@@ -60,25 +60,24 @@ The W3C standard `crypto.subtle.digest()` API has a different interface which
 It runs well both on Node.js and browsers.
 Node.js's native `crypto` module definitely runs faster than any others on Node.js, though.
 
-|module|version|node.js V24 string|node.js V24 U8A|Chromium 151 string|Chromium 151 U8A|
+|module|version|Node.js v24 string|Node.js v24 U8A|Safari 26 string|Safari 26 U8A|
 |---|---|---|---|---|---|
-|[crypto](https://nodejs.org/api/crypto.html)|-|31ms 🥇|20ms 🥇|N/A|N/A|
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.11.0|140ms 🥈|98ms 🥈|284ms 🥇|161ms|
-|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|483ms|480ms|459ms 🥈|568ms|
-|[jssha](https://npmjs.com/package/jssha)|3.3.2|549ms|279ms|485ms|266ms|
-|[crypto-js](https://npmjs.com/package/crypto-js)|4.2.0|627ms|N/A|731ms|N/A|
-|[sha.js](https://npmjs.com/package/sha.js)|2.4.12|347ms|362ms|532ms|205ms|
-|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|2.3.0|N/A|103ms|N/A|157ms 🥈|
-|[node-forge](https://www.npmjs.com/package/node-forge)|1.4.0|497ms|N/A|598ms|N/A|
-|[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|-|N/A|1,525ms|N/A|51ms 🥇|
+|[crypto](https://nodejs.org/api/crypto.html)|-|27ms 🥇|21ms 🥇|▫️|▫️|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|0.11.0|82ms 🥈|59ms 🥈|109ms 🥇|98ms 🥇|
+|[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|464ms|461ms|596ms|574ms|
+|[jssha](https://npmjs.com/package/jssha)|3.3.2|507ms|257ms|334ms 🥈|237ms|
+|[crypto-js](https://npmjs.com/package/crypto-js)|4.2.0|568ms|▫️|482ms|▫️|
+|[sha.js](https://npmjs.com/package/sha.js)|2.4.12|346ms|346ms|377ms|143ms|
+|[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|2.3.0|▫️|95ms|▫️|126ms 🥈|
+|[node-forge](https://www.npmjs.com/package/node-forge)|1.4.0|452ms|▫️|392ms|▫️|
+|[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|-|▫️|1474ms|▫️|450ms|
 
 The benchmark above shows the median of ten sets, normalized to milliseconds
 per 20,000 SHA-1 `hex` digests. Each cell uses a fixed operation count
-calibrated towards 500ms. Each repeat hashes two samples, a 1.9KB JSON string
-and a 0.9KB UTF-8 text; every measurement is preceded by one untimed repeat
-to absorb first-load effects. `▫️` marks an unsupported input shape, and `⁎₁`
-a cell excluded because it delegates to native crypto instead of JavaScript.
-It is tested on Linux aarch64, Node.js v24.19.0 and Chromium 151.
+calibrated towards 500ms. Each repeat hashes two samples, a 2KB JSON string
+and a 1KB UTF-8 text; every measurement is preceded by one untimed repeat
+to absorb first-load effects. `▫️` marks an unsupported input shape.
+It is tested on Apple M4, Node.js v24.19.0 and Safari 26.5.2.
 
 You could run the benchmark as below.
 
@@ -143,7 +142,7 @@ via `browser` property of `package.json` of your app if you needs
 }
 ```
 
-It costs only less than 3KB, whereas `browserify`'s default `crypto` polyfill
+It costs only about 4KB, whereas `browserify`'s default `crypto` polyfill
 costs more than 300KB huge even after minified.
 
 ```js
