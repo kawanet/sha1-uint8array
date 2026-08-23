@@ -39,7 +39,7 @@ It has a better compatibility with Node.js's `crypto` module in its smaller foot
 |module|string IN|Uint8Array IN|TypedArray IN|hex OUT|Uint8Array OUT|minified|
 |---|---|---|---|---|---|---|
 |[crypto](https://nodejs.org/api/crypto.html)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|-|
-|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|3KB|
+|[sha1-uint8array](http://github.com/kawanet/sha1-uint8array)|✅ OK|✅ OK|✅ OK|✅ OK|✅ OK|4KB|
 |[hash.js](https://www.npmjs.com/package/hash.js)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|6KB|
 |[jssha](https://npmjs.com/package/jssha)|✅ OK|✅ OK|🚫 NO|✅ OK|✅ OK|9KB|
 |[crypto-js](https://npmjs.com/package/crypto-js)|✅ OK|🚫 NO|🚫 NO|✅ OK|🚫 NO|66KB|
@@ -143,7 +143,7 @@ via `browser` property of `package.json` of your app if you needs
 }
 ```
 
-It costs only less than 3KB, whereas `browserify`'s default `crypto` polyfill
+It costs only about 4KB, whereas `browserify`'s default `crypto` polyfill
 costs more than 300KB huge even after minified.
 
 ```js

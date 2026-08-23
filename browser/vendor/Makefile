@@ -7,13 +7,9 @@ ALL := \
 	lib/node-forge/lib/sha1.js \
 	lib/sha.js/sha1.js \
 
-####
+MINJS_DST := ../../dist/sha1-uint8array.min.js
 
-# Some of the compared libraries reach for Buffer through safe-buffer,
-# which requires the "buffer" module by name. node-resolve is told not to
-# prefer builtins here, so it resolves that to the "buffer" devDependency:
-# without it the import is left external and the IIFE ends up calling
-# itself with an undefined argument, which throws as the page loads.
+####
 
 # Derive rollup's --name from the target path: drop "@", turn "/", "-" and "."
 # into "_". $* only has a value while a recipe runs, so this must be = not :=.
@@ -33,10 +29,13 @@ lib/%.min.js: lib/%.js
 	@ls -l $< $@
 
 # The figures the README compatibility table quotes, in KB.
-sizes: $(ALL:.js=.min.js)
+sizes: $(MINJS_DST) $(ALL:.js=.min.js)
 	@for f in $^; do \
 		printf '  %3dKB  %s\n' "$$(( ($$(wc -c < $$f) + 512) / 1024 ))" "$$f"; \
 	done
+
+$(MINJS_DST):
+	$(MAKE) -C ../../builder smoke-minjs
 
 ####
 
