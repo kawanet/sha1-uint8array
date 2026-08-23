@@ -67,17 +67,16 @@ Node.js's native `crypto` module definitely runs faster than any others on Node.
 |[hash.js](https://www.npmjs.com/package/hash.js)|1.1.7|464ms|461ms|596ms|574ms|
 |[jssha](https://npmjs.com/package/jssha)|3.3.2|507ms|257ms|334ms 🥈|237ms|
 |[crypto-js](https://npmjs.com/package/crypto-js)|4.2.0|568ms|▫️|482ms|▫️|
-|[sha.js](https://npmjs.com/package/sha.js)|2.4.12|346ms|346ms| 377ms|143ms|
+|[sha.js](https://npmjs.com/package/sha.js)|2.4.12|346ms|346ms|377ms|143ms|
 |[@noble/hashes](https://www.npmjs.com/package/@noble/hashes)|2.3.0|▫️|95ms|▫️|126ms 🥈|
-|[node-forge](https://www.npmjs.com/package/node-forge)|1.4.0|452ms|▫️| 392ms|▫️|
+|[node-forge](https://www.npmjs.com/package/node-forge)|1.4.0|452ms|▫️|392ms|▫️|
 |[crypto.subtle.digest()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest)|-|▫️|1474ms|▫️|450ms|
 
 The benchmark above shows the median of ten sets, normalized to milliseconds
 per 20,000 SHA-1 `hex` digests. Each cell uses a fixed operation count
 calibrated towards 500ms. Each repeat hashes two samples, a 2KB JSON string
 and a 1KB UTF-8 text; every measurement is preceded by one untimed repeat
-to absorb first-load effects. `▫️` marks an unsupported input shape, and `⁎₁`
-a cell excluded because it delegates to native crypto instead of JavaScript.
+to absorb first-load effects. `▫️` marks an unsupported input shape.
 It is tested on Apple M4, Node.js v24.19.0 and Safari 26.5.2.
 
 You could run the benchmark as below.
