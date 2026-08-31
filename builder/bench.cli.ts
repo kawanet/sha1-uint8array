@@ -18,6 +18,10 @@ const param = (key: string, def: string): string => {
 const DURATION = +param("DURATION", "500")
 const SETS = +param("SETS", "10")
 const TARGET = param("TARGET", "")
+// Module paths given on the command line. Naming files is a more
+// specific request than TARGET, so they replace it rather than filter
+// it, turning the run into a comparison of this package's own builds.
+const PATHS = ("object" === typeof location) ? [] : process.argv.slice(2)
 const SHUFFLE_SEED = 0x53484131 // ASCII "SHA1"
 
 // Garbage in, immediate stop: the caller chose the values.
@@ -122,10 +126,15 @@ async function main(): Promise<void> {
         ["crypto.subtle.digest()", new A.SubtleCrypto()],
     ]
 
-    // TARGET picks modules by comma-separated substrings;
-    // the default (empty) measures everything.
-    const wants = TARGET.split(",").map(t => t.trim()).filter(Boolean)
-    const picked = ADAPTERS.filter(([name]) => !wants.length || wants.some(t => name.includes(t)))
+    // Named paths replace the comparison outright rather than filtering
+    // it, so every cell then measures a build of this package and only
+    // the code differs between them.
+    const named = PATHS.map((path): [string, A.Adapter] => [path, A.dynamicModule(path)])
+
+    // TARGET picks modules by comma-separated substrings; the default
+    // (empty) measures everything, and named paths skip it entirely.
+    const wants = named.length ? [] : TARGET.split(",").map(t => t.trim()).filter(Boolean)
+    const picked = named.length ? named : ADAPTERS.filter(([name]) => !wants.length || wants.some(t => name.includes(t)))
 
     if (wants.length && picked.length === 0) {
         throw new Error(`TARGET matched nothing: ${TARGET}`)
@@ -135,6 +144,9 @@ async function main(): Promise<void> {
     // the sync implementation when it has one, otherwise the async one
     // in the same rotation, and a cell-less adapter is simply skipped.
     const cells: Cell[] = []
+    // Loading a module is a cost of the import, not of a digest, so an
+    // adapter that needs one gets it out of the way before any closure.
+    for (const [, adapter] of picked) await adapter.setup()
     for (const [name, adapter] of picked) {
         const s = adapter.makeStringBench(stringPairs)
         if (s) cells.push({name, input: "string", impl: "sync", fn: s, opsPerRepeat: stringPairs.length, repeat: 0, times: []})
@@ -145,7 +157,8 @@ async function main(): Promise<void> {
     }
 
     const env = ("object" === typeof process && process.version) ? `node ${process.version}` : navigator.userAgent
-    out(`# ${env} DURATION=${DURATION} SETS=${SETS} TARGET=${TARGET || "(all)"}`)
+    const scope = named.length ? `FILES=${named.length}` : `TARGET=${TARGET || "(all)"}`
+    out(`# ${env} DURATION=${DURATION} SETS=${SETS} ${scope}`)
 
     const random = mulberry32(SHUFFLE_SEED)
 
