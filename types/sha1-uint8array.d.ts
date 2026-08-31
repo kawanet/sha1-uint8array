@@ -4,7 +4,7 @@
 
 export declare function createHash(algorithm?: string): Hash
 
-declare class Hash {
+export interface Hash {
     update(data: string, encoding?: string): this;
     update(data: Uint8Array): this;
     update(data: ArrayBufferView): this;
