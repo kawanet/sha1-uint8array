@@ -36,7 +36,7 @@ export const createHash: typeof types.createHash = (algorithm?: string) => {
     return new Hash()
 }
 
-class Hash {
+export class Hash {
     private A = 0x67452301 | 0;
     private B = 0xefcdab89 | 0;
     private C = 0x98badcfe | 0;
