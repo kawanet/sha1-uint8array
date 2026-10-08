@@ -25,6 +25,10 @@ const rollupConfig: RollupOptions = {
      * test/utils/adapters.ts
      */
     external: [
+        "node:assert",
+        "node:crypto",
+        "node:test",
+        "node:url",
         "@noble/hashes/legacy.js",
         "@noble/hashes/utils.js",
         "crypto-js",
@@ -32,20 +36,12 @@ const rollupConfig: RollupOptions = {
         "jssha/dist/sha1",
         "node-forge/lib/sha1.js",
         "sha.js/sha1.js",
+        "sha1-uint8array",
     ],
 
     output: {
-        file: "../browser/tests/bundled.js",
-        format: "iife",
-        globals: {
-            "@noble/hashes/legacy.js": "noble_hashes_legacy",
-            "@noble/hashes/utils.js": "noble_hashes_utils",
-            "crypto-js": "crypto_js_index",
-            "hash.js/lib/hash/sha/1.js": "hash_js_lib_hash_sha_1",
-            "jssha/dist/sha1": "jssha_dist_sha1",
-            "node-forge/lib/sha1.js": "node_forge_lib_sha1",
-            "sha.js/sha1.js": "sha_js_sha1",
-        },
+        file: "../browser/tests/bundled.mjs",
+        format: "esm",
     },
 
     treeshake: false,
@@ -57,12 +53,6 @@ const rollupConfig: RollupOptions = {
         // run exercises the published artifact rather than the sources.
         alias({
             entries: [
-                {find: "node:test", replacement: here("./node-test.shim.ts")},
-                {find: "node:assert", replacement: here("./node-assert.shim.ts")},
-                {find: "node:crypto", replacement: here("./node-crypto.shim.ts")},
-                {find: "node:url", replacement: here("./node-url.shim.ts")},
-                {find: "sha1-uint8array", replacement: here("../browser/import.js")},
-                // The suites spell the entry as a relative path; same shim either way.
                 {find: /^(\.\.\/)+lib\/sha1-uint8array\.ts$/, replacement: here("../browser/import.js")},
             ],
         }),
