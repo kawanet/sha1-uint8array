@@ -11,33 +11,11 @@ import {showFiles} from "./show-files.ts"
 
 const here = (path: string): string => fileURLToPath(new URL(path, import.meta.url))
 
-// Bundles the test suites for browser/tests.html: Node builtins become
-// shims, and the package name resolves to the global left behind by
-// dist/*.min.js, so the browser exercises the shipped bundle.
 const rollupConfig: RollupOptions = {
-    // 90.entrypoint tests require() the shipped files; Node-only, no browser
-    // shim, so the negative pattern keeps them out of the browser bundle.
-    input: ["../test/*.test.ts", "!../test/90.*"],
+    input: ["../test/*.test.ts"],
 
-    /**
-     * browser/tests.html
-     * browser/vendor/Makefile
-     * test/utils/adapters.ts
-     */
-    external: [
-        "node:assert",
-        "node:crypto",
-        "node:test",
-        "node:url",
-        "@noble/hashes/legacy.js",
-        "@noble/hashes/utils.js",
-        "crypto-js",
-        "hash.js/lib/hash/sha/1.js",
-        "jssha/dist/sha1",
-        "node-forge/lib/sha1.js",
-        "sha.js/sha1.js",
-        "sha1-uint8array",
-    ],
+    // Bare specifiers stay external; only relative paths are bundled.
+    external: v => /^[^./]/.test(v) && (v !== "multi-entry.js"),
 
     output: {
         file: "../browser/tests/bundled.mjs",
