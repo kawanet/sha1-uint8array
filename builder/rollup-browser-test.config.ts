@@ -11,59 +11,23 @@ import {showFiles} from "./show-files.ts"
 
 const here = (path: string): string => fileURLToPath(new URL(path, import.meta.url))
 
-// Bundles the test suites for browser/tests.html: Node builtins become
-// shims, and the package name resolves to the global left behind by
-// dist/*.min.js, so the browser exercises the shipped bundle.
 const rollupConfig: RollupOptions = {
-    // 90.entrypoint tests require() the shipped files; Node-only, no browser
-    // shim, so the negative pattern keeps them out of the browser bundle.
-    input: ["../test/*.test.ts", "!../test/90.*"],
+    input: ["../test/*.test.ts"],
 
-    /**
-     * browser/tests.html
-     * browser/vendor/Makefile
-     * test/utils/adapters.ts
-     */
-    external: [
-        "@noble/hashes/legacy.js",
-        "@noble/hashes/utils.js",
-        "crypto-js",
-        "hash.js/lib/hash/sha/1.js",
-        "jssha/dist/sha1",
-        "node-forge/lib/sha1.js",
-        "sha.js/sha1.js",
-    ],
+    // Bare specifiers stay external; only relative paths are bundled.
+    external: v => /^[^./]/.test(v) && (v !== "multi-entry.js"),
 
     output: {
-        file: "../browser/tests/bundled.js",
-        format: "iife",
-        globals: {
-            "@noble/hashes/legacy.js": "noble_hashes_legacy",
-            "@noble/hashes/utils.js": "noble_hashes_utils",
-            "crypto-js": "crypto_js_index",
-            "hash.js/lib/hash/sha/1.js": "hash_js_lib_hash_sha_1",
-            "jssha/dist/sha1": "jssha_dist_sha1",
-            "node-forge/lib/sha1.js": "node_forge_lib_sha1",
-            "sha.js/sha1.js": "sha_js_sha1",
-        },
+        file: "../browser/tests/bundled.mjs",
+        format: "esm",
     },
 
     treeshake: false,
 
     plugins: [
-        // Everything the suites reach for that only exists on Node resolves
-        // to a local stand-in here. The package itself resolves to the shim
-        // that reads the global left behind by dist/*.min.js, so the browser
-        // run exercises the published artifact rather than the sources.
         alias({
             entries: [
-                {find: "node:test", replacement: here("./node-test.shim.ts")},
-                {find: "node:assert", replacement: here("./node-assert.shim.ts")},
-                {find: "node:crypto", replacement: here("./node-crypto.shim.ts")},
-                {find: "node:url", replacement: here("./node-url.shim.ts")},
-                {find: "sha1-uint8array", replacement: here("../browser/import.js")},
-                // The suites spell the entry as a relative path; same shim either way.
-                {find: /^(\.\.\/)+lib\/sha1-uint8array\.ts$/, replacement: here("../browser/import.js")},
+                {find: /^(\.\.\/)+lib\/sha1-uint8array\.ts$/, replacement: "sha1-uint8array"},
             ],
         }),
 

@@ -1,0 +1,14 @@
+{
+  "imports": {
+    "node:crypto": "./node-crypto.shim.mjs",
+    "node:url": "./node-url.shim.mjs",
+    "@noble/hashes/legacy.js": "./vendor/lib/@noble/hashes/legacy.js",
+    "@noble/hashes/utils.js": "./vendor/lib/@noble/hashes/utils.js",
+    "crypto-js": "./vendor/lib/crypto-js/index.js",
+    "hash.js/lib/hash/sha/1.js": "./vendor/lib/hash.js/lib/hash/sha/1.js",
+    "jssha/dist/sha1": "./vendor/lib/jssha/dist/sha1.js",
+    "node-forge/lib/sha1.js": "./vendor/lib/node-forge/lib/sha1.js",
+    "sha.js/sha1.js": "./vendor/lib/sha.js/sha1.js",
+    "sha1-uint8array": "./import.mjs"
+  }
+}
