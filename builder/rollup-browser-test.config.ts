@@ -25,13 +25,9 @@ const rollupConfig: RollupOptions = {
     treeshake: false,
 
     plugins: [
-        // Everything the suites reach for that only exists on Node resolves
-        // to a local stand-in here. The package itself resolves to the shim
-        // that reads the global left behind by dist/*.min.js, so the browser
-        // run exercises the published artifact rather than the sources.
         alias({
             entries: [
-                {find: /^(\.\.\/)+lib\/sha1-uint8array\.ts$/, replacement: here("../browser/import.js")},
+                {find: /^(\.\.\/)+lib\/sha1-uint8array\.ts$/, replacement: "sha1-uint8array"},
             ],
         }),
 

@@ -21,10 +21,6 @@ const rollupConfig: RollupOptions = {
     plugins: [
         alias({
             entries: [
-                // The suites import the entry point by relative path so they
-                // run on the .ts sources directly during development. Rewrite
-                // that to the package name here: it stays external, and the
-                // bundle resolves it through exports to dist/ at runtime.
                 {find: /^(\.\.\/)+lib\/sha1-uint8array\.ts$/, replacement: "sha1-uint8array"},
             ],
         }),
