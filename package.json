@@ -30,7 +30,7 @@
     "sha.js": "^2.4.12",
     "terser": "^5.51.2",
     "ts-refine": "^0.6.3",
-    "typescript": "^7.0.2"
+    "typescript": "^6.0.3"
   },
   "devEngines": {
     "runtime": {
